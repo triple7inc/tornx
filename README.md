@@ -83,15 +83,6 @@ The order of records in `stocks_cache.json` does not matter to the model as long
 | `.build_*.bat` | Windows/PyInstaller build entry points. |
 | `last_date_finder.py` | Cache inspection/helper utility. |
 
-The published source intentionally excludes only:
-
-- every `__pycache__/` directory and compiled Python cache file;
-- `/build/`;
-- `/dist-signed/`;
-- `/ff-market-flipper/`.
-
-The root `.gitignore` enforces those exclusions. Everything else is part of the source release.
-
 ## Requirements
 
 - Windows 10/11 for the supplied `.bat` automation and automatic firewall rule;
@@ -245,7 +236,7 @@ The optional legacy build is:
 .\.build_stocks_predictor.bat
 ```
 
-Build artifacts go to `dist/`; temporary PyInstaller files go to the ignored `build/` directory. The lab/predictor build scripts copy the three required cache/model files into `dist/` only when those destination files do not already exist. Rebuilding an executable therefore does not overwrite a newer live cache.
+Build artifacts go to `dist/`, and temporary PyInstaller files go to `build/`. The lab/predictor build scripts copy the three required cache/model files into `dist/` only when those destination files do not already exist. Rebuilding an executable therefore does not overwrite a newer live cache.
 
 After changing `PORT`, rebuild `stocks_server.exe`. Its Windows Firewall rule name and inbound rule are derived from that port. If the automation interval changes, update both `INTERVAL` in Python and the hardcoded `900`-second calculation in `dist/stocks_live_predictor.bat`.
 
