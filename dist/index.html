@@ -1,0 +1,4271 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#090b0e">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='13' fill='%2311161a'/%3E%3Cpath d='M18 14l14 18 14-18 6 6-14 12 14 12-6 6-14-18-14 18-6-6 14-12-14-12z' fill='%2388d82f'/%3E%3C/svg%3E">
+<title>TornX - Torn Stock Market Predictor</title>
+<meta name="description" content="TornX combines changed-state price forecasts, trade signals, live holdings, and fee-aware portfolio insights across all 35 Torn stocks.">
+<meta name="application-name" content="TornX">
+<meta name="apple-mobile-web-app-title" content="TornX">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="canonical" href="https://tornx.187.be/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="TornX">
+<meta property="og:title" content="TornX - Torn Stock Market Predictor">
+<meta property="og:description" content="TornX combines changed-state price forecasts, trade signals, live holdings, and fee-aware portfolio insights across all 35 Torn stocks.">
+<meta property="og:url" content="https://tornx.187.be/">
+<meta property="og:image" content="https://tornx.187.be/tornx-social-preview.png">
+<meta property="og:image:secure_url" content="https://tornx.187.be/tornx-social-preview.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="TornX stock market predictor dashboard preview">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="TornX - Torn Stock Market Predictor">
+<meta name="twitter:description" content="Changed-state price forecasts, trade signals, live holdings, and fee-aware portfolio insights across all 35 Torn stocks">
+<meta name="twitter:url" content="https://tornx.187.be/">
+<meta name="twitter:image" content="https://tornx.187.be/tornx-social-preview.png">
+<meta name="twitter:image:alt" content="TornX stock market predictor dashboard preview">
+<style>
+:root{
+    color-scheme:dark;
+    --bg:#07090b;
+    --panel:#121519;
+    --panel-2:#181b1f;
+    --line:#30353b;
+    --line-soft:#24282d;
+    --text:#f1f4f7;
+    --muted:#89919a;
+    --faint:#59616a;
+    --green:#88d82f;
+    --green-rgb:136,216,47;
+    --red:#ff5061;
+    --red-rgb:255,80,97;
+    --amber:#f1b84b;
+    --cyan:#55d7df;
+    --shadow:0 30px 80px rgba(0,0,0,.48);
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+*{scrollbar-width:thin;scrollbar-color:rgba(136,216,47,.66) #0b0e10}
+*::-webkit-scrollbar{width:10px;height:10px}
+*::-webkit-scrollbar-track{background:#0b0e10;box-shadow:inset 0 0 0 1px rgba(255,255,255,.025)}
+*::-webkit-scrollbar-thumb{min-width:32px;min-height:32px;border:2px solid #0b0e10;border-radius:8px 2px 8px 2px;background:linear-gradient(135deg,#9de94b,#68ad28);box-shadow:inset 0 0 0 1px rgba(225,255,195,.18),0 0 8px rgba(136,216,47,.16)}
+*::-webkit-scrollbar-thumb:hover{background:linear-gradient(135deg,#b0f765,#7bcf2e);box-shadow:inset 0 0 0 1px rgba(240,255,224,.28),0 0 11px rgba(136,216,47,.3)}
+*::-webkit-scrollbar-thumb:active{background:linear-gradient(135deg,#7dca35,#57931f)}
+*::-webkit-scrollbar-corner{background:#0b0e10}
+*::-webkit-scrollbar-button{width:0;height:0}
+::selection{color:#081006;background:rgba(136,216,47,.88);text-shadow:none}
+::-moz-selection{color:#081006;background:rgba(136,216,47,.88);text-shadow:none}
+html{min-height:100%;background:var(--bg)}
+body{
+    min-height:100vh;
+    margin:0;
+    color:var(--text);
+    background:
+        radial-gradient(circle at 8% -8%,rgba(85,215,223,.11),transparent 29rem),
+        radial-gradient(circle at 92% 2%,rgba(136,216,47,.07),transparent 32rem),
+        linear-gradient(145deg,#080a0d 0%,#0b0e11 48%,#07090b 100%);
+    font-family:Inter,"Segoe UI",Arial,sans-serif;
+    overflow-x:hidden;
+}
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    opacity:.28;
+    background-image:
+        linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);
+    background-size:36px 36px;
+    mask-image:linear-gradient(to bottom,black,transparent 78%);
+}
+body::after{
+    content:"";
+    position:fixed;
+    z-index:20;
+    inset:0;
+    pointer-events:none;
+    background:linear-gradient(transparent 0%,rgba(255,255,255,.012) 50%,transparent 100%);
+    background-size:100% 6px;
+    mix-blend-mode:overlay;
+}
+button,input,select{font:inherit}
+button{color:inherit}
+.app-shell{
+    width:min(1180px,calc(100% - 32px));
+    margin:0 auto;
+    padding:28px 0 46px;
+    position:relative;
+    z-index:1;
+    -webkit-user-select:none;
+    user-select:none;
+}
+.hero-description,.countdown,.target-date,.stat-value,.search-input,
+.stock-name,.stock-abbr,.predicted-price,.current-price,.forecast-change,
+.forecast-percent,.confidence-value,.hash-readout span,.empty-state p{
+    -webkit-user-select:text;
+    user-select:text;
+    cursor:default;
+}
+.topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:24px;
+    min-height:62px;
+    margin-bottom:22px;
+    animation:rise .55s cubic-bezier(.2,.8,.2,1) both;
+}
+.brand{display:flex;align-items:center;gap:13px;min-width:0}
+.brand-mark{
+    width:48px;
+    height:48px;
+    position:relative;
+    display:grid;
+    place-items:center;
+    border:1px solid rgba(136,216,47,.34);
+    border-radius:12px 3px 12px 3px;
+    overflow:hidden;
+    color:#dfffbc;
+    background:
+        linear-gradient(145deg,rgba(136,216,47,.24),transparent 52%),
+        #11161a;
+    box-shadow:inset 0 1px rgba(255,255,255,.08),0 0 28px rgba(136,216,47,.08);
+}
+.brand-mark::before,.brand-mark::after{
+    content:"";
+    position:absolute;
+    width:7px;
+    height:37px;
+    border-radius:2px;
+    background:linear-gradient(#e8ffd1,#78c92b);
+    box-shadow:0 0 16px rgba(136,216,47,.38);
+}
+.brand-mark::before{transform:rotate(36deg)}
+.brand-mark::after{transform:rotate(-36deg)}
+.brand-copy{min-width:0}
+.brand-name{
+    margin:0;
+    font:800 25px/1 "Bahnschrift Condensed","Arial Narrow",sans-serif;
+    letter-spacing:.035em;
+    text-transform:uppercase;
+}
+.brand-name span{color:var(--green)}
+.brand-subtitle{
+    margin:5px 0 0;
+    color:var(--muted);
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    white-space:nowrap;
+}
+.sync-cluster{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap}
+.sync-pill,.mode-pill{
+    min-height:36px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:0 12px;
+    border:1px solid var(--line);
+    border-radius:7px;
+    color:var(--muted);
+    background:rgba(17,20,24,.8);
+    box-shadow:inset 0 1px rgba(255,255,255,.03);
+    font-size:10px;
+    font-weight:800;
+    letter-spacing:.09em;
+    text-transform:uppercase;
+}
+.sync-dot{
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:var(--amber);
+    box-shadow:0 0 0 0 rgba(241,184,75,.55);
+}
+.sync-pill.live .sync-dot{background:var(--green);animation:pulse 1.8s infinite}
+.sync-pill.error .sync-dot{background:var(--red)}
+.hero{
+    position:relative;
+    overflow:hidden;
+    margin-bottom:18px;
+    border:1px solid var(--line);
+    border-radius:14px 4px 14px 4px;
+    background:
+        linear-gradient(112deg,rgba(255,255,255,.045),transparent 32%),
+        linear-gradient(145deg,#171b1f,#101317 72%);
+    box-shadow:var(--shadow),inset 0 1px rgba(255,255,255,.05);
+    animation:rise .6s .06s cubic-bezier(.2,.8,.2,1) both;
+}
+.hero::before{
+    content:"";
+    position:absolute;
+    width:440px;
+    height:440px;
+    top:-275px;
+    right:-95px;
+    border-radius:50%;
+    border:1px solid rgba(136,216,47,.15);
+    box-shadow:0 0 0 46px rgba(136,216,47,.018),0 0 0 92px rgba(85,215,223,.012);
+}
+.hero::after{
+    content:"TORNX / PREDICTION ENGINE / UTC";
+    position:absolute;
+    right:-9px;
+    bottom:8px;
+    color:rgba(255,255,255,.035);
+    font:900 42px/1 "Bahnschrift Condensed","Arial Narrow",sans-serif;
+    letter-spacing:.04em;
+    white-space:nowrap;
+}
+.hero-main{
+    min-height:210px;
+    display:grid;
+    grid-template-columns:minmax(0,1.15fr) minmax(310px,.85fr);
+    align-items:stretch;
+    position:relative;
+    z-index:1;
+}
+.hero-copy{padding:30px 32px 26px}
+.eyebrow{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:12px;
+    color:var(--green);
+    font-size:10px;
+    font-weight:900;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+}
+.eyebrow::before{content:"";width:26px;height:1px;background:currentColor;box-shadow:0 0 9px currentColor}
+.hero h1{
+    max-width:610px;
+    margin:0;
+    font:900 clamp(36px,5vw,64px)/.94 "Bahnschrift Condensed","Arial Narrow",sans-serif;
+    letter-spacing:-.02em;
+    text-transform:uppercase;
+}
+.hero h1 span{color:var(--green);text-shadow:0 0 26px rgba(136,216,47,.16)}
+.hero-description{
+    max-width:590px;
+    margin:16px 0 0;
+    color:#aab1b9;
+    font-size:13px;
+    line-height:1.65;
+}
+.target-module{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:26px 28px;
+    border-left:1px solid var(--line-soft);
+    background:linear-gradient(115deg,rgba(0,0,0,.1),rgba(0,0,0,.28));
+}
+.target-ring{
+    --progress:0deg;
+    width:166px;
+    aspect-ratio:1;
+    display:grid;
+    place-items:center;
+    position:relative;
+    border-radius:50%;
+    background:conic-gradient(var(--green) var(--progress),#292e33 0);
+    filter:drop-shadow(0 0 16px rgba(136,216,47,.09));
+    transition:background .5s ease;
+}
+.target-ring::before{
+    content:"";
+    position:absolute;
+    inset:6px;
+    border-radius:50%;
+    background:radial-gradient(circle at 50% 38%,#20252a,#101317 72%);
+    border:1px solid #373d43;
+    box-shadow:inset 0 0 28px rgba(0,0,0,.48);
+}
+.target-content{position:relative;text-align:center;padding:20px}
+.target-label{
+    display:block;
+    margin-bottom:8px;
+    color:var(--muted);
+    font-size:9px;
+    font-weight:900;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+}
+.countdown{
+    display:block;
+    color:#f7fbff;
+    font:700 23px/1 "Cascadia Mono",Consolas,monospace;
+    letter-spacing:-.06em;
+    font-variant-numeric:tabular-nums;
+}
+.target-date{
+    display:block;
+    margin-top:9px;
+    color:var(--green);
+    font:700 9px/1.35 "Cascadia Mono",Consolas,monospace;
+    text-transform:uppercase;
+}
+.target-date span{display:block}
+.target-date span+span{margin-top:3px;color:#c6f39a}
+.stats-rail{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    border-top:1px solid var(--line);
+    position:relative;
+    z-index:1;
+    background:rgba(5,7,9,.25);
+}
+.stat{
+    min-width:0;
+    padding:15px 18px 16px;
+    border-right:1px solid var(--line-soft);
+}
+.stat:last-child{border-right:0}
+.stat-label{
+    display:block;
+    margin-bottom:6px;
+    color:var(--faint);
+    font-size:9px;
+    font-weight:900;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+}
+.stat-value{
+    display:block;
+    overflow:hidden;
+    color:#e9edf1;
+    font:700 14px/1.25 "Cascadia Mono",Consolas,monospace;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+.stat-value.good{color:var(--green)}
+.stat-value.warn{color:var(--amber)}
+.stat-value-line{display:flex;align-items:center;gap:7px;min-width:0}
+.stat-value-line .stat-value{min-width:0}
+.info-tip{position:relative;flex:0 0 auto}
+.info-trigger{
+    width:18px;
+    height:18px;
+    display:grid;
+    place-items:center;
+    padding:0;
+    border:1px solid #424950;
+    border-radius:50%;
+    color:#8f989f;
+    background:#14181b;
+    font:800 10px/1 Georgia,serif;
+    cursor:help;
+    transition:color .18s,border-color .18s,background .18s;
+}
+.info-trigger:hover,.info-trigger:focus-visible{color:#dcffc0;border-color:rgba(136,216,47,.55);background:rgba(136,216,47,.1)}
+.tooltip-bubble{
+    width:250px;
+    position:absolute;
+    z-index:20;
+    left:50%;
+    bottom:calc(100% + 10px);
+    padding:10px 12px;
+    border:1px solid rgba(136,216,47,.34);
+    border-radius:6px 2px 6px 2px;
+    color:#cbd2d7;
+    background:rgba(10,13,15,.98);
+    box-shadow:0 14px 35px rgba(0,0,0,.48),inset 0 1px rgba(255,255,255,.04);
+    font:600 10px/1.55 Inter,"Segoe UI",sans-serif;
+    letter-spacing:.015em;
+    text-transform:none;
+    white-space:normal;
+    transform:translate(-50%,5px);
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+    transition:opacity .18s,transform .18s,visibility .18s;
+}
+.tooltip-bubble::after{
+    content:"";
+    position:absolute;
+    top:100%;
+    left:50%;
+    border:6px solid transparent;
+    border-top-color:rgba(136,216,47,.34);
+    transform:translateX(-50%);
+}
+.info-tip:hover .tooltip-bubble,.info-tip:focus-within .tooltip-bubble{opacity:1;visibility:visible;transform:translate(-50%,0)}
+.market-panel{
+    overflow:hidden;
+    border:1px solid var(--line);
+    border-radius:10px 3px 10px 3px;
+    background:#111418;
+    box-shadow:var(--shadow),inset 0 1px rgba(255,255,255,.045);
+    animation:rise .65s .12s cubic-bezier(.2,.8,.2,1) both;
+}
+.market-toolbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:14px;
+    padding:13px 14px;
+    border-bottom:1px solid var(--line);
+    background:linear-gradient(#21252a,#171a1e);
+}
+.toolbar-title{display:flex;align-items:center;gap:11px;min-width:max-content}
+.toolbar-title-icon{
+    width:30px;
+    height:30px;
+    display:grid;
+    place-items:center;
+    border:1px solid #3b4249;
+    border-radius:4px;
+    color:var(--green);
+    background:#14171a;
+    font:bold 17px/1 monospace;
+}
+.toolbar-title strong{
+    display:block;
+    font:800 15px/1 "Bahnschrift Condensed","Arial Narrow",sans-serif;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+}
+.toolbar-title small{display:block;margin-top:4px;color:var(--faint);font-size:9px;letter-spacing:.1em;text-transform:uppercase}
+.controls{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.search-wrap{position:relative}
+.search-wrap::before{
+    content:"";
+    position:absolute;
+    width:9px;
+    height:9px;
+    left:12px;
+    top:50%;
+    border:1.5px solid #7f8891;
+    border-radius:50%;
+    transform:translateY(-62%);
+}
+.search-wrap::after{
+    content:"";
+    position:absolute;
+    width:6px;
+    height:1.5px;
+    left:20px;
+    top:57%;
+    background:#7f8891;
+    transform:rotate(45deg);
+}
+.search-input,.sort-select,.icon-button,.filter-button{
+    min-height:38px;
+    border:1px solid #383e44;
+    border-radius:5px;
+    outline:0;
+    background:#101316;
+    transition:border-color .18s,background .18s,transform .18s,color .18s;
+}
+.search-input{
+    width:210px;
+    padding:0 12px 0 34px;
+    color:var(--text);
+}
+.search-input::placeholder{color:#656d75}
+.sort-select{padding:0 32px 0 11px;color:#b4bbc2;cursor:pointer}
+.icon-button{
+    width:40px;
+    padding:0;
+    display:grid;
+    place-items:center;
+    cursor:pointer;
+    color:#a9b1b8;
+}
+.icon-button:hover,.filter-button:hover,.sort-select:hover{border-color:#515961;background:#181c20;color:#fff}
+.icon-button:active,.filter-button:active{transform:translateY(1px)}
+.filters{
+    display:flex;
+    gap:6px;
+    padding:10px 14px;
+    overflow-x:auto;
+    border-bottom:1px solid var(--line-soft);
+    background:#14171a;
+    scrollbar-width:thin;
+}
+.portfolio-refresh-bar{
+    min-height:42px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:14px;
+    padding:7px 14px;
+    border-bottom:1px solid var(--line-soft);
+    color:#89928b;
+    background:linear-gradient(90deg,#111518,#15191c);
+    font-size:9px;
+    font-weight:800;
+    letter-spacing:.055em;
+}
+.portfolio-refresh-status{display:flex;align-items:center;gap:8px;min-width:0}
+.portfolio-refresh-dot{width:6px;height:6px;flex:0 0 6px;border-radius:50%;background:var(--green);box-shadow:0 0 7px rgba(136,216,47,.38)}
+.portfolio-refresh-bar.loading .portfolio-refresh-dot{animation:pulse 1.2s infinite}
+.portfolio-refresh-bar.error{color:#ff9aa4;background:linear-gradient(90deg,rgba(255,80,97,.065),#15191c)}
+.portfolio-refresh-bar.error .portfolio-refresh-dot{background:var(--red);box-shadow:0 0 7px rgba(255,80,97,.42)}
+.portfolio-refresh-bar.paused{color:#70787f}
+.portfolio-refresh-bar.paused .portfolio-refresh-dot{background:#596168;box-shadow:none}
+.portfolio-refresh-text{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.portfolio-refresh-button{
+    min-height:28px;
+    flex:0 0 auto;
+    padding:0 10px;
+    border:1px solid #3b4348;
+    border-radius:5px 2px 5px 2px;
+    color:#b9c3bb;
+    background:#101416;
+    font-size:8px;
+    font-weight:900;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    cursor:pointer;
+}
+.portfolio-refresh-button:hover:not(:disabled){border-color:rgba(136,216,47,.45);color:#e8ffd3;background:rgba(136,216,47,.07)}
+.portfolio-refresh-button:disabled{opacity:.48;cursor:not-allowed}
+.filter-button{
+    flex:0 0 auto;
+    min-height:32px;
+    padding:0 12px;
+    color:#7f8790;
+    font-size:9px;
+    font-weight:900;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    cursor:pointer;
+}
+.filter-button.active{
+    color:#eaffd3;
+    border-color:rgba(136,216,47,.46);
+    background:rgba(136,216,47,.1);
+    box-shadow:inset 0 0 12px rgba(136,216,47,.04);
+}
+.table-wrap{overflow-x:auto}
+.stock-table{
+    width:100%;
+    min-width:1050px;
+    border-collapse:separate;
+    border-spacing:0;
+    table-layout:fixed;
+}
+.stock-table caption{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.stock-table thead{position:sticky;top:0;z-index:4}
+.stock-table th{
+    height:37px;
+    padding:0 14px;
+    color:#c8cdd2;
+    border-right:1px solid #3a3f44;
+    border-bottom:1px solid #050607;
+    background:linear-gradient(#42464a,#24272a 64%,#1b1e21);
+    box-shadow:inset 0 1px rgba(255,255,255,.16),inset 0 -1px rgba(255,255,255,.035);
+    font:800 12px/1 "Bahnschrift Condensed","Arial Narrow",sans-serif;
+    letter-spacing:.035em;
+    text-align:left;
+    text-shadow:0 1px 1px #000;
+    text-transform:uppercase;
+}
+.stock-table th:last-child{border-right:0}
+.stock-table th small{color:#92989e;font-size:8px;font-weight:700;letter-spacing:.02em;text-transform:none}
+.col-stock{width:27%}.col-price{width:20%}.col-holding{width:17%}.col-forecast{width:16%}.col-signal{width:12%}.col-confidence{width:8%}
+.stock-row{
+    --tone:var(--muted);
+    height:76px;
+}
+.stock-row.entering{animation:rowIn .44s var(--delay,0ms) cubic-bezier(.22,.8,.25,1) both}
+.stock-row.up{--tone:var(--green)}
+.stock-row.down{--tone:var(--red)}
+.stock-row{cursor:default}
+.stock-row:focus-visible{position:relative;z-index:3;outline:2px solid var(--green);outline-offset:-2px}
+.stock-row.owned td:first-child::after{content:"";position:absolute;left:0;top:12px;bottom:12px;width:2px;border-radius:2px;background:var(--green);box-shadow:0 0 10px rgba(136,216,47,.38)}
+.stock-row td{
+    position:relative;
+    height:76px;
+    padding:0 14px;
+    overflow:hidden;
+    border-right:1px solid #31363b;
+    border-bottom:1px solid #07090a;
+    background:#1a1d20;
+    box-shadow:inset 0 1px rgba(255,255,255,.025);
+    transition:background .22s,border-color .22s,transform .22s;
+}
+.stock-row.even td{background:#171a1d}
+.stock-row td:last-child{border-right:0}
+.stock-row:hover td{background:#21252a;border-bottom-color:#3b4248}
+.stock-row:hover .stock-cell{transform:translateX(3px)}
+.stock-cell{display:flex;align-items:center;gap:13px;transition:transform .22s}
+.logo-frame{
+    width:61px;
+    height:76px;
+    flex:0 0 61px;
+    margin-left:-14px;
+    display:grid;
+    place-items:center;
+    position:relative;
+    overflow:hidden;
+    border-right:1px solid #30353a;
+    background:linear-gradient(140deg,#22262a,#111315);
+}
+.logo-frame::after{
+    content:"";
+    position:absolute;
+    inset:-80% -30%;
+    background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.1) 50%,transparent 60%);
+    transform:translateX(-60%);
+    transition:transform .65s;
+}
+.stock-row:hover .logo-frame::after{transform:translateX(60%)}
+.stock-logo{width:50px;height:50px;object-fit:contain;filter:drop-shadow(0 5px 6px rgba(0,0,0,.42));transition:transform .3s;-webkit-user-drag:none}
+.stock-row:hover .stock-logo{transform:scale(1.08) rotate(-2deg)}
+.logo-fallback{
+    width:42px;
+    height:42px;
+    display:none;
+    place-items:center;
+    border:1px solid #414850;
+    border-radius:5px;
+    color:var(--tone);
+    background:#15181b;
+    font:900 12px/1 "Cascadia Mono",monospace;
+}
+.stock-meta{min-width:0}
+.stock-name{
+    overflow:hidden;
+    color:#eef1f4;
+    font:800 17px/1.08 "Bahnschrift Condensed","Arial Narrow",sans-serif;
+    letter-spacing:.012em;
+    text-overflow:ellipsis;
+    text-shadow:0 1px 1px #000;
+    white-space:nowrap;
+}
+.stock-subline{display:flex;align-items:center;gap:7px;margin-top:7px}
+.stock-abbr{display:block;color:#737b83;font:700 10px/1 "Cascadia Mono",monospace;letter-spacing:.14em}
+.stock-position-badge{display:inline-flex;align-items:center;gap:4px;min-height:18px;padding:0 6px;border:1px solid rgba(136,216,47,.28);border-radius:8px;color:#b8e58d;background:rgba(136,216,47,.07);font:900 8px/1 "Cascadia Mono",monospace;letter-spacing:.04em;white-space:nowrap}
+.stock-position-badge::before{content:"";width:4px;height:4px;border-radius:50%;background:var(--green);box-shadow:0 0 6px rgba(136,216,47,.55)}
+.price-cell{background-image:linear-gradient(90deg,rgba(255,255,255,.015),transparent)!important}
+.price-stack{position:relative;z-index:2}
+.predicted-price{
+    color:#f7f8f9;
+    font:700 clamp(27px,3.1vw,36px)/1 "Cascadia Mono",Consolas,monospace;
+    letter-spacing:-.07em;
+    text-shadow:0 2px 0 #000;
+    font-variant-numeric:tabular-nums;
+    white-space:nowrap;
+}
+.price-decimal{color:#d8dde1}
+.current-price{
+    margin-top:6px;
+    color:#7f8790;
+    font:600 10px/1 "Cascadia Mono",Consolas,monospace;
+    letter-spacing:.035em;
+    text-transform:uppercase;
+}
+.current-price strong{color:#aeb5bc;font-weight:700}
+.spark{
+    position:absolute;
+    z-index:0;
+    inset:8px 3px 3px 35%;
+    width:65%;
+    height:65px;
+    opacity:.32;
+    pointer-events:none;
+}
+.spark path.line{
+    fill:none;
+    stroke:var(--tone);
+    stroke-width:1.4;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+    stroke-dasharray:230;
+    stroke-dashoffset:230;
+    animation:drawLine 1.2s var(--delay,0ms) ease forwards;
+}
+.spark path.projection{
+    fill:none;
+    stroke:var(--tone);
+    stroke-width:1.4;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+}
+.spark circle{fill:var(--tone);stroke:#111417;stroke-width:1.2}
+.spark path.area{fill:var(--tone);opacity:.13}
+.forecast-block{position:relative;z-index:2;font-variant-numeric:tabular-nums}
+.forecast-change{color:var(--tone);font:800 15px/1 "Cascadia Mono",monospace;white-space:nowrap}
+.forecast-percent{display:block;margin-top:7px;color:var(--tone);font:700 10px/1 monospace;white-space:nowrap}
+.forecast-caption{display:block;margin-top:5px;color:#666e76;font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+.action-chip{
+    display:inline-flex;
+    min-width:82px;
+    min-height:28px;
+    align-items:center;
+    justify-content:center;
+    padding:0 9px;
+    border:1px solid color-mix(in srgb,var(--tone) 42%,#30363b);
+    border-radius:4px;
+    color:var(--tone);
+    background:color-mix(in srgb,var(--tone) 8%,#111417);
+    font-size:9px;
+    font-weight:900;
+    letter-spacing:.08em;
+    text-align:center;
+    text-transform:uppercase;
+}
+.eligibility{display:flex;align-items:center;gap:6px;margin-top:7px;color:#687079;font-size:8px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.eligibility::before{content:"";width:5px;height:5px;border-radius:50%;background:#545b62}
+.eligibility.ready{color:var(--green)}
+.eligibility.ready::before{background:var(--green);box-shadow:0 0 7px rgba(136,216,47,.5)}
+.confidence-value{color:#c4cbd1;font:700 13px/1 "Cascadia Mono",monospace}
+.confidence-track{width:100%;height:3px;margin-top:9px;overflow:hidden;border-radius:9px;background:#2a2f34}
+.confidence-fill{height:100%;width:var(--confidence);border-radius:inherit;background:linear-gradient(90deg,#59616a,var(--tone));transform-origin:left;animation:growBar .7s var(--delay,0ms) both}
+.strength-label{display:block;margin-top:6px;color:#636b73;font-size:8px;letter-spacing:.08em;text-transform:uppercase}
+.holding-cell{font-variant-numeric:tabular-nums}
+.holding-value{display:block;color:#f0f4f1;font:800 14px/1 "Cascadia Mono",monospace;letter-spacing:-.03em;white-space:nowrap}
+.holding-profit{display:block;margin-top:7px;color:#737c76;font:700 9px/1 "Cascadia Mono",monospace;white-space:nowrap}
+.holding-profit.up{color:var(--green)}
+.holding-profit.down{color:var(--red)}
+.holding-empty{display:block;color:#596168;font-size:8px;font-weight:900;letter-spacing:.1em;text-transform:uppercase}
+.holding-detail-row>td{padding:0!important;border:0!important;background:#0d1012!important}
+.holding-drawer{overflow:hidden;border-bottom:1px solid #343a3f;background:linear-gradient(145deg,rgba(136,216,47,.035),rgba(9,12,14,.94));box-shadow:inset 0 12px 30px rgba(0,0,0,.2)}
+.holding-detail-row.entering .holding-drawer{animation:holdingOpen .28s cubic-bezier(.2,.8,.2,1) both}
+.holding-summary{display:grid;grid-template-columns:minmax(230px,1.35fr) repeat(3,minmax(120px,.65fr));border-bottom:1px solid #2d3337;background:rgba(19,23,26,.82)}
+.holding-summary-main,.holding-summary-stat{min-height:70px;padding:13px 15px;border-right:1px solid #2c3236}
+.holding-summary-stat:last-child{border-right:0}
+.holding-summary-main{display:flex;align-items:center;gap:12px}
+.holding-summary span{display:block;color:#626b65;font-size:7px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+.holding-summary .holding-summary-mark{width:46px;height:46px;display:grid;place-items:center;box-sizing:border-box;flex:0 0 46px;padding:0 5px;border:1px solid rgba(136,216,47,.34);border-radius:8px 2px 8px 2px;color:var(--green);background:#101610;font:900 14px/1 "Cascadia Mono",monospace;letter-spacing:.02em;text-align:center;text-transform:none}
+.holding-summary strong{display:block;margin-top:6px;color:#e8eee9;font:800 13px/1 "Cascadia Mono",monospace;white-space:nowrap}
+.holding-summary-main strong{font:900 18px/1 "Bahnschrift Condensed","Arial Narrow",sans-serif;letter-spacing:.03em;text-transform:uppercase}
+.holding-summary strong.up{color:var(--green)}
+.holding-summary strong.down{color:var(--red)}
+.holding-transactions-wrap{overflow-x:auto;padding:0 12px 12px}
+.holding-transactions{width:100%;min-width:1000px;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.holding-transactions th{height:31px;padding:0 8px;border:0;border-bottom:1px solid #31373b;color:#8b948e;background:transparent;box-shadow:none;font:900 8px/1 Inter,"Segoe UI",sans-serif;letter-spacing:.08em;text-align:left;text-shadow:none;text-transform:uppercase}
+.holding-transactions td{height:35px;padding:0 8px;border:0;border-right:1px solid #252b2e;border-bottom:1px solid #252b2e;color:#d5dad7;background:rgba(17,21,23,.7);font:700 10px/1 "Cascadia Mono",monospace;white-space:nowrap}
+.holding-transactions td:last-child{border-right:0}
+.holding-transactions tr:last-child td{border-bottom:0}
+.holding-transactions .up{color:var(--green)}
+.holding-transactions .down{color:var(--red)}
+.holding-trade-cell{text-align:center}
+.holding-fee-amount{display:block;color:#d5dad7}
+.holding-fee-state{display:block;margin-top:4px;font:800 7px/1 Inter,"Segoe UI",sans-serif;letter-spacing:.035em;text-transform:uppercase}
+.holding-trade-link{display:inline-flex;min-width:40px;min-height:22px;align-items:center;justify-content:center;border:1px solid rgba(136,216,47,.32);border-radius:4px 1px 4px 1px;color:#bdeb93;background:rgba(136,216,47,.06);font:900 8px/1 Inter,"Segoe UI",sans-serif;letter-spacing:.07em;text-decoration:none;text-transform:uppercase}
+.holding-trade-link:hover{border-color:rgba(136,216,47,.62);color:#efffde;background:rgba(136,216,47,.12)}
+.holding-trade-link.sell{border-color:rgba(255,80,97,.3);color:#ff9ba4;background:rgba(255,80,97,.055)}
+.holding-trade-link.sell:hover{border-color:rgba(255,80,97,.62);color:#ffd8dc;background:rgba(255,80,97,.11)}
+.holding-trade-neutral{color:#69716d;font:800 7px/1 Inter,"Segoe UI",sans-serif;letter-spacing:.06em;text-transform:uppercase}
+.holding-no-transactions{padding:25px;color:#667069;font-size:9px;font-weight:800;letter-spacing:.08em;text-align:center;text-transform:uppercase}
+@keyframes holdingOpen{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+.empty-state{
+    display:none;
+    padding:64px 24px;
+    color:var(--muted);
+    text-align:center;
+}
+.empty-state.visible{display:block}
+.empty-icon{
+    width:54px;
+    height:54px;
+    display:grid;
+    place-items:center;
+    margin:0 auto 14px;
+    border:1px solid #363c42;
+    border-radius:50%;
+    color:var(--green);
+    background:#15181b;
+    font:800 18px monospace;
+}
+.empty-state strong{display:block;margin-bottom:7px;color:#dce1e5;font-size:15px}
+.empty-state p{max-width:520px;margin:0 auto 16px;line-height:1.6;font-size:12px}
+.market-footer{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    min-height:42px;
+    padding:9px 14px;
+    border-top:1px solid var(--line);
+    color:#626a72;
+    background:#101316;
+    font-size:9px;
+    font-weight:800;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+}
+.hash-readout{overflow:hidden;font-family:"Cascadia Mono",monospace;text-overflow:ellipsis;white-space:nowrap}
+.hash-readout span{color:#9098a0}
+.footer-warning{color:#707880;text-align:right}
+.account-pill{
+    min-height:36px;
+    display:grid;
+    grid-template-columns:auto auto;
+    align-items:center;
+    gap:2px 9px;
+    padding:7px 11px;
+    border:1px solid rgba(136,216,47,.26);
+    border-radius:7px 2px 7px 2px;
+    background:rgba(18,25,18,.82);
+    box-shadow:inset 0 1px rgba(255,255,255,.04);
+}
+.account-pill::before{
+    content:"";
+    width:7px;
+    height:7px;
+    grid-row:1/3;
+    border-radius:50%;
+    background:var(--green);
+    box-shadow:0 0 11px rgba(136,216,47,.54);
+}
+.account-pill strong{
+    color:#dffbc2;
+    font-size:9px;
+    letter-spacing:.09em;
+    text-transform:uppercase;
+}
+.account-pill small{color:#687079;font:700 8px/1 monospace;letter-spacing:.08em}
+.trial-access-pill{
+    min-height:36px;
+    display:grid;
+    grid-template-columns:auto auto;
+    align-items:center;
+    gap:2px 8px;
+    padding:7px 11px;
+    border:1px solid rgba(241,184,75,.34);
+    border-radius:7px 2px 7px 2px;
+    color:#ffe2a5;
+    background:rgba(35,27,13,.82);
+    box-shadow:inset 0 1px rgba(255,255,255,.04),0 0 20px rgba(241,184,75,.04);
+}
+.trial-access-pill::before{
+    content:"7D";
+    grid-row:1/3;
+    display:grid;
+    place-items:center;
+    width:23px;
+    height:23px;
+    border:1px solid rgba(241,184,75,.42);
+    border-radius:50%;
+    color:var(--amber);
+    background:rgba(241,184,75,.07);
+    font:900 8px/1 "Cascadia Mono",monospace;
+}
+.trial-access-pill span{font-size:8px;font-weight:900;letter-spacing:.11em;text-transform:uppercase}
+.trial-access-pill strong{color:#f5c86f;font:900 10px/1 "Cascadia Mono",monospace;letter-spacing:.03em}
+.trial-access-pill.expired{border-color:rgba(255,80,97,.4);color:#ff9ca5;background:rgba(44,18,22,.86)}
+.trial-access-pill.expired::before{content:"!";border-color:rgba(255,80,97,.46);color:#ff7f8b;background:rgba(255,80,97,.07)}
+.trial-access-pill.expired strong{color:#ff7f8b}
+.logout-button{
+    min-height:36px;
+    padding:0 12px;
+    border:1px solid var(--line);
+    border-radius:6px 2px 6px 2px;
+    color:#9aa2aa;
+    background:#111418;
+    font-size:9px;
+    font-weight:900;
+    letter-spacing:.09em;
+    text-transform:uppercase;
+    cursor:pointer;
+    transition:border-color .2s,color .2s,background .2s;
+}
+.logout-button:hover{border-color:#5a3138;color:#ff8a95;background:#1c1316}
+.auth-gate{
+    position:fixed;
+    z-index:100;
+    inset:0;
+    min-height:100vh;
+    overflow:auto;
+    isolation:isolate;
+    color:var(--text);
+    background:
+        radial-gradient(circle at 14% 8%,rgba(85,215,223,.12),transparent 31rem),
+        radial-gradient(circle at 86% 18%,rgba(136,216,47,.11),transparent 35rem),
+        linear-gradient(135deg,#080b0d,#0c1013 52%,#07090b);
+}
+.auth-canvas{position:fixed;z-index:-3;inset:0;width:100%;height:100%;opacity:.78}
+.auth-gate::before{
+    content:"";
+    position:fixed;
+    z-index:-2;
+    inset:0;
+    background-image:
+        linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+    background-size:44px 44px;
+    mask-image:radial-gradient(circle at center,black,transparent 76%);
+}
+.auth-gate::after{
+    content:"TORNX / AUTHORIZED MARKET INTELLIGENCE / LIMITED ACCESS";
+    position:fixed;
+    z-index:-1;
+    right:-12px;
+    bottom:14px;
+    color:rgba(255,255,255,.026);
+    font:900 clamp(34px,6vw,82px)/1 "Bahnschrift Condensed","Arial Narrow",sans-serif;
+    letter-spacing:.035em;
+    white-space:nowrap;
+}
+.auth-stage{
+    width:min(1120px,calc(100% - 40px));
+    min-height:100vh;
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(400px,470px);
+    align-items:center;
+    gap:clamp(42px,8vw,110px);
+    margin:0 auto;
+    padding:42px 0;
+}
+.auth-intro{position:relative;animation:rise .65s cubic-bezier(.2,.8,.2,1) both}
+.auth-brand{display:flex;align-items:center;gap:14px;margin-bottom:54px}
+.auth-brand .brand-mark{width:54px;height:54px}
+.auth-brand .brand-name{font-size:29px}
+.auth-kicker{
+    display:flex;
+    align-items:center;
+    gap:11px;
+    margin-bottom:16px;
+    color:var(--green);
+    font-size:10px;
+    font-weight:900;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+}
+.auth-kicker::before{content:"";width:32px;height:1px;background:var(--green);box-shadow:0 0 9px var(--green)}
+.auth-title{
+    max-width:620px;
+    margin:0;
+    font:900 clamp(52px,7vw,88px)/.87 "Bahnschrift Condensed","Arial Narrow",sans-serif;
+    letter-spacing:-.025em;
+    text-transform:uppercase;
+}
+.auth-title span{display:block;color:var(--green);text-shadow:0 0 38px rgba(136,216,47,.18)}
+.auth-lede{max-width:560px;margin:24px 0 0;color:#a2abb3;font-size:14px;line-height:1.75}
+.auth-signal{
+    max-width:540px;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:1px;
+    margin-top:35px;
+    overflow:hidden;
+    border:1px solid var(--line);
+    border-radius:9px 2px 9px 2px;
+    background:var(--line);
+    box-shadow:0 20px 55px rgba(0,0,0,.22);
+}
+.auth-signal div{min-height:72px;padding:14px;background:rgba(15,18,21,.88)}
+.auth-signal span{display:block;color:#626a72;font-size:8px;font-weight:900;letter-spacing:.13em;text-transform:uppercase}
+.auth-signal strong{display:block;margin-top:9px;color:#dce2e6;font:800 13px/1.1 "Cascadia Mono",monospace}
+.auth-signal div:first-child strong{color:var(--green)}
+.auth-card{
+    position:relative;
+    overflow:hidden;
+    border:1px solid #353b41;
+    border-radius:18px 4px 18px 4px;
+    background:
+        linear-gradient(145deg,rgba(255,255,255,.06),transparent 30%),
+        linear-gradient(150deg,#181c20,#101316 76%);
+    box-shadow:0 38px 110px rgba(0,0,0,.58),inset 0 1px rgba(255,255,255,.07);
+    animation:authCardIn .75s .08s cubic-bezier(.2,.8,.2,1) both;
+}
+.auth-card::before{
+    content:"";
+    position:absolute;
+    width:240px;
+    height:240px;
+    top:-175px;
+    right:-115px;
+    border:1px solid rgba(136,216,47,.22);
+    border-radius:50%;
+    box-shadow:0 0 0 34px rgba(136,216,47,.025),0 0 0 68px rgba(85,215,223,.014);
+}
+.auth-card-head{position:relative;padding:29px 30px 0}
+.auth-security-line{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:28px}
+.auth-security-line span{display:flex;align-items:center;gap:8px;color:#75808a;font-size:8px;font-weight:900;letter-spacing:.14em;text-transform:uppercase}
+.auth-security-line span::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 10px rgba(136,216,47,.65);animation:pulse 1.8s infinite}
+.auth-level{padding:6px 8px;border:1px solid rgba(136,216,47,.23);border-radius:4px;color:#bce989!important;background:rgba(136,216,47,.06)}
+.auth-card h2{margin:0;font:900 35px/.95 "Bahnschrift Condensed","Arial Narrow",sans-serif;letter-spacing:.01em;text-transform:uppercase}
+.auth-card-subtitle{margin:11px 0 0;color:#89929a;font-size:11px;line-height:1.55}
+.auth-form{position:relative;padding:26px 30px 20px}
+.auth-label{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px;color:#aeb6bd;font-size:9px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+.auth-label small{color:#59616a;font:700 8px monospace;letter-spacing:.08em}
+.key-field{
+    display:grid;
+    grid-template-columns:1fr auto;
+    min-height:51px;
+    overflow:hidden;
+    border:1px solid #373d43;
+    border-radius:8px 2px 8px 2px;
+    background:#0d1013;
+    box-shadow:inset 0 1px 8px rgba(0,0,0,.28);
+    transition:border-color .2s,box-shadow .2s;
+}
+.key-field:focus-within{border-color:rgba(136,216,47,.66);box-shadow:0 0 0 3px rgba(136,216,47,.07),inset 0 1px 8px rgba(0,0,0,.28)}
+.key-input{min-width:0;padding:0 16px;border:0;outline:0;color:#e7ecef;background:transparent;font:700 14px/1 "Cascadia Mono",Consolas,monospace;letter-spacing:.06em}
+.key-input::placeholder{color:#3f474e;letter-spacing:.03em}
+.key-toggle{width:50px;border:0;border-left:1px solid #292e33;color:#69727a;background:#14181c;font-size:9px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
+.key-toggle:hover{color:#c8d0d6;background:#181d21}
+.auth-error{min-height:19px;margin:8px 0 0;color:#ff7c89;font-size:10px;font-weight:700;line-height:1.45}
+.auth-options{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin:11px 0 20px}
+.remember-option{display:flex;align-items:flex-start;gap:10px;color:#afb6bd;font-size:10px;line-height:1.45;cursor:pointer}
+.remember-option input{position:absolute;opacity:0;pointer-events:none}
+.remember-box{width:17px;height:17px;display:grid;flex:0 0 17px;place-items:center;border:1px solid #41484f;border-radius:4px 1px 4px 1px;background:#101418;transition:.2s}
+.remember-option input:checked+.remember-box{border-color:var(--green);color:#0a1006;background:var(--green);box-shadow:0 0 14px rgba(136,216,47,.18)}
+.remember-option input:checked+.remember-box::after{content:"✓";font-size:11px;font-weight:1000}
+.remember-option small{display:block;margin-top:2px;color:#606971;font-size:8px}
+.auth-submit{
+    width:100%;
+    min-height:49px;
+    position:relative;
+    overflow:hidden;
+    border:1px solid #9be745;
+    border-radius:8px 2px 8px 2px;
+    color:#091006;
+    background:linear-gradient(105deg,#75c722,#a8ed56);
+    box-shadow:0 15px 35px rgba(91,155,30,.18),inset 0 1px rgba(255,255,255,.42);
+    font-size:10px;
+    font-weight:1000;
+    letter-spacing:.15em;
+    text-transform:uppercase;
+    cursor:pointer;
+    transition:transform .2s,filter .2s;
+}
+.auth-submit::after{content:"";position:absolute;inset:-1px;transform:translateX(-110%);background:linear-gradient(100deg,transparent,rgba(255,255,255,.38),transparent);transition:transform .45s}
+.auth-submit:hover{transform:translateY(-1px);filter:brightness(1.05)}
+.auth-submit:hover::after{transform:translateX(110%)}
+.auth-submit:disabled{cursor:wait;filter:saturate(.45);transform:none}
+.auth-submit-label{position:relative;z-index:1}
+.auth-disclosure{padding:18px 30px 24px;border-top:1px solid var(--line-soft);background:rgba(8,10,12,.3)}
+.auth-disclosure-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;color:#879099;font-size:8px;font-weight:900;letter-spacing:.14em;text-transform:uppercase}
+.auth-disclosure-title strong{color:#a7d775;font-size:8px}
+.auth-facts{display:grid;grid-template-columns:1fr 1fr;gap:9px 18px;margin:0}
+.auth-facts div{min-width:0}
+.auth-facts dt{color:#555e66;font-size:7px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+.auth-facts dd{margin:3px 0 0;color:#939ca4;font-size:8px;line-height:1.4}
+.auth-warning{margin:13px 0 0;color:#626c74;font-size:8px;line-height:1.55}
+.auth-warning strong{color:var(--amber)}
+.auth-footnote{position:absolute;right:30px;bottom:18px;color:#4b535a;font:700 8px monospace;letter-spacing:.08em;text-transform:uppercase}
+.access-gate{
+    position:fixed;
+    z-index:100;
+    inset:0;
+    min-height:100vh;
+    overflow:auto;
+    isolation:isolate;
+    color:var(--text);
+    background:
+        radial-gradient(circle at 12% 12%,rgba(136,216,47,.11),transparent 32rem),
+        radial-gradient(circle at 88% 4%,rgba(241,184,75,.09),transparent 35rem),
+        linear-gradient(135deg,#080b0d,#0c1013 52%,#07090b);
+}
+.access-gate::before{
+    content:"";
+    position:fixed;
+    z-index:-2;
+    inset:0;
+    background-image:
+        linear-gradient(rgba(255,255,255,.024) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(255,255,255,.024) 1px,transparent 1px);
+    background-size:44px 44px;
+    mask-image:radial-gradient(circle at center,black,transparent 80%);
+}
+.access-gate::after{
+    content:"TORNX / PRIVATE ACCESS / PERMANENT ACTIVATION";
+    position:fixed;
+    z-index:-1;
+    right:-12px;
+    bottom:14px;
+    color:rgba(255,255,255,.026);
+    font:900 clamp(34px,5.5vw,76px)/1 "Bahnschrift Condensed","Arial Narrow",sans-serif;
+    letter-spacing:.035em;
+    white-space:nowrap;
+}
+.access-stage{
+    width:min(1120px,calc(100% - 40px));
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    gap:34px;
+    margin:0 auto;
+    padding:34px 0 52px;
+}
+.access-topbar{display:flex;align-items:center;justify-content:space-between;gap:24px}
+.pending-identity{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:9px 12px;
+    border:1px solid rgba(136,216,47,.24);
+    border-radius:7px 2px 7px 2px;
+    background:rgba(16,22,17,.82);
+}
+.pending-identity::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 11px rgba(136,216,47,.58)}
+.pending-identity span{display:block;color:#d8e2d0;font-size:9px;font-weight:900;letter-spacing:.1em;text-transform:uppercase}
+.pending-identity small{display:block;margin-top:3px;color:#68716a;font:700 8px/1 monospace;letter-spacing:.08em}
+.access-grid{display:grid;grid-template-columns:minmax(0,.82fr) minmax(460px,1.18fr);gap:30px;align-items:stretch}
+.access-story,.access-card{
+    position:relative;
+    overflow:hidden;
+    border:1px solid #343a40;
+    border-radius:16px 4px 16px 4px;
+    background:
+        linear-gradient(145deg,rgba(255,255,255,.05),transparent 30%),
+        linear-gradient(150deg,#171b1f,#101316 76%);
+    box-shadow:0 34px 100px rgba(0,0,0,.5),inset 0 1px rgba(255,255,255,.06);
+}
+.access-story{display:flex;flex-direction:column;justify-content:space-between;padding:34px;animation:rise .6s cubic-bezier(.2,.8,.2,1) both}
+.access-story::before{content:"";position:absolute;width:340px;height:340px;left:-230px;bottom:-220px;border:1px solid rgba(136,216,47,.18);border-radius:50%;box-shadow:0 0 0 44px rgba(136,216,47,.02),0 0 0 88px rgba(85,215,223,.012)}
+.access-eyebrow{display:flex;align-items:center;gap:10px;color:var(--green);font-size:9px;font-weight:900;letter-spacing:.19em;text-transform:uppercase}
+.access-eyebrow::before{content:"";width:28px;height:1px;background:currentColor;box-shadow:0 0 9px currentColor}
+.access-story h1{max-width:480px;margin:20px 0 0;font:900 clamp(46px,5vw,68px)/.9 "Bahnschrift Condensed","Arial Narrow",sans-serif;letter-spacing:-.02em;text-transform:uppercase}
+.access-story h1 span{display:block;color:var(--green)}
+.access-story-copy{margin:22px 0 0;color:#9ea7af;font-size:12px;line-height:1.75}
+.lifetime-seal{position:relative;display:grid;grid-template-columns:auto 1fr;align-items:center;gap:14px;margin-top:38px;padding:15px;border:1px solid rgba(136,216,47,.22);border-radius:9px 2px 9px 2px;background:rgba(136,216,47,.045)}
+.lifetime-seal-mark{width:42px;height:42px;display:grid;place-items:center;border:1px solid rgba(136,216,47,.4);border-radius:50%;color:var(--green);background:#101611;font:900 17px monospace;box-shadow:0 0 22px rgba(136,216,47,.08)}
+.lifetime-seal span{display:block;color:#687169;font-size:8px;font-weight:900;letter-spacing:.13em;text-transform:uppercase}
+.lifetime-seal strong{display:block;margin-top:5px;color:#e3f3d4;font:800 14px/1 "Cascadia Mono",monospace;text-transform:uppercase}
+.access-status-line{position:relative;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 19px;border-bottom:1px solid var(--line-soft);background:rgba(7,9,11,.28)}
+.access-status-line span{display:flex;align-items:center;gap:8px;color:#9ba49c;font-size:8px;font-weight:900;letter-spacing:.13em;text-transform:uppercase}
+.access-status-line span::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--amber);box-shadow:0 0 10px rgba(241,184,75,.45);animation:pulse 1.8s infinite}
+.access-status-line strong{color:#d6a84e;font-size:8px;letter-spacing:.1em;text-transform:uppercase}
+.access-card-body{padding:25px 27px 27px}
+.access-card h2{margin:0;font:900 34px/.95 "Bahnschrift Condensed","Arial Narrow",sans-serif;text-transform:uppercase}
+.access-intro{margin:11px 0 20px;color:#939ca4;font-size:11px;line-height:1.65}
+.instruction-list{display:grid;gap:8px;margin:0 0 16px;padding:0;list-style:none;counter-reset:instruction}
+.instruction-list li{counter-increment:instruction;display:grid;grid-template-columns:28px 1fr;gap:11px;align-items:start;padding:11px 12px;border:1px solid #2f353a;border-radius:7px 2px 7px 2px;background:#111519;color:#aeb6bd;font-size:10px;line-height:1.55}
+.instruction-list li::before{content:counter(instruction);width:26px;height:26px;display:grid;place-items:center;border:1px solid #444c53;border-radius:50%;color:var(--green);background:#0c100d;font:900 10px monospace}
+.instruction-list strong{color:#edf2f5}
+.acknowledgements{display:grid;gap:7px;margin:15px 0 10px}
+.access-check{display:flex;align-items:flex-start;gap:9px;padding:10px;border:1px solid #2b3136;border-radius:6px 2px 6px 2px;color:#939ca4;background:rgba(8,10,12,.32);font-size:9px;line-height:1.45;cursor:pointer}
+.access-check input{margin:1px 0 0;accent-color:var(--green)}
+.ack-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:9px 0 13px;color:#646d75;font-size:8px;font-weight:900;letter-spacing:.1em;text-transform:uppercase}
+.ack-meter{width:92px;height:3px;overflow:hidden;border-radius:8px;background:#293036}
+.ack-meter span{display:block;width:var(--ack-progress,0%);height:100%;background:linear-gradient(90deg,var(--amber),var(--green));transition:width .25s}
+.reveal-button{width:100%;min-height:45px;border:1px solid #96e13f;border-radius:7px 2px 7px 2px;color:#081006;background:linear-gradient(105deg,#75c722,#a8ed56);font-size:9px;font-weight:1000;letter-spacing:.13em;text-transform:uppercase;cursor:pointer;transition:filter .2s,transform .2s}
+.reveal-button:hover:not(:disabled){filter:brightness(1.06);transform:translateY(-1px)}
+.reveal-button:disabled{border-color:#353c42;color:#626a72;background:#1a1e22;cursor:not-allowed}
+.offer-panel{margin-top:13px;padding:17px;border:1px solid rgba(136,216,47,.26);border-radius:9px 2px 9px 2px;background:linear-gradient(120deg,rgba(136,216,47,.07),rgba(6,9,6,.32));text-align:center}
+.offer-panel span{display:block;color:#737d75;font-size:8px;font-weight:900;letter-spacing:.14em;text-transform:uppercase}
+.offer-amount{display:block;margin-top:9px;color:#e9ffd2;font:800 clamp(26px,3vw,36px)/1 "Cascadia Mono",Consolas,monospace;letter-spacing:-.055em;text-shadow:0 0 20px rgba(136,216,47,.15)}
+.offer-panel small{display:block;margin-top:9px;color:#748078;font-size:8px;line-height:1.5}
+.verification-callout{margin:13px 0 0;padding:11px 12px;border-left:2px solid var(--amber);color:#aaa69a;background:rgba(241,184,75,.045);font-size:9px;line-height:1.55}
+.verification-callout strong{color:#f4c76d}
+.access-actions{display:flex;align-items:center;justify-content:space-between;gap:9px;margin-top:16px}
+.access-secondary{min-height:36px;padding:0 12px;border:1px solid #363d43;border-radius:6px 2px 6px 2px;color:#939ca4;background:#111519;font-size:8px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;cursor:pointer}
+.access-secondary:hover{border-color:#545d65;color:#e4e8eb}
+.access-secondary.primary{border-color:rgba(136,216,47,.3);color:#b9df93;background:rgba(136,216,47,.055)}
+.access-legal{margin:15px 0 0;color:#596169;font-size:8px;line-height:1.5}
+@keyframes authCardIn{from{opacity:0;transform:translateY(22px) rotateX(2deg)}to{opacity:1;transform:none}}
+.admin-launch{
+    position:fixed;
+    z-index:45;
+    left:22px;
+    bottom:22px;
+    min-width:188px;
+    min-height:52px;
+    display:grid;
+    grid-template-columns:36px 1fr auto;
+    align-items:center;
+    gap:10px;
+    padding:7px 11px 7px 8px;
+    border:1px solid rgba(136,216,47,.36);
+    border-radius:10px 3px 10px 3px;
+    color:#e8f6dc;
+    background:linear-gradient(135deg,rgba(27,35,29,.97),rgba(11,15,17,.97));
+    box-shadow:0 18px 55px rgba(0,0,0,.52),inset 0 1px rgba(255,255,255,.06);
+    cursor:pointer;
+    animation:rise .45s cubic-bezier(.2,.8,.2,1) both;
+}
+.admin-launch:hover{border-color:rgba(136,216,47,.66);background:linear-gradient(135deg,#202b22,#101518);transform:translateY(-1px)}
+.admin-launch-mark,.admin-heading-mark{
+    display:grid;
+    place-items:center;
+    border:1px solid rgba(136,216,47,.45);
+    border-radius:7px 2px 7px 2px;
+    color:var(--green);
+    background:#0d130e;
+    box-shadow:inset 0 1px rgba(255,255,255,.05),0 0 18px rgba(136,216,47,.09);
+    font:900 11px/1 "Cascadia Mono",monospace;
+}
+.admin-launch-mark{width:36px;height:36px}
+.admin-launch-copy{text-align:left}
+.admin-launch-copy strong,.admin-launch-copy small{display:block}
+.admin-launch-copy strong{font:900 12px/1 "Bahnschrift Condensed","Arial Narrow",sans-serif;letter-spacing:.07em;text-transform:uppercase}
+.admin-launch-copy small{margin-top:4px;color:#727d76;font-size:7px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+.admin-launch-live{display:flex;align-items:center;gap:5px;color:#84917e;font-size:7px;font-weight:900;letter-spacing:.1em;text-transform:uppercase}
+.admin-launch-live i,.admin-secure-state i{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 10px rgba(136,216,47,.58);animation:pulse 1.8s infinite}
+body.admin-console-open{overflow:hidden}
+.admin-overlay{position:fixed;z-index:90;inset:0;display:flex;justify-content:flex-end}
+.admin-backdrop{position:absolute;inset:0;width:100%;height:100%;padding:0;border:0;background:rgba(2,4,5,.76);backdrop-filter:blur(7px);cursor:default;animation:adminFade .22s ease both}
+.admin-console{
+    position:relative;
+    width:min(720px,calc(100% - 34px));
+    height:100%;
+    overflow:hidden;
+    border-left:1px solid #39413c;
+    color:var(--text);
+    background:
+        radial-gradient(circle at 90% 0,rgba(136,216,47,.08),transparent 26rem),
+        linear-gradient(150deg,#151a1d,#0c0f12 74%);
+    box-shadow:-28px 0 90px rgba(0,0,0,.58),inset 1px 0 rgba(255,255,255,.035);
+    animation:adminSlide .32s cubic-bezier(.2,.8,.2,1) both;
+}
+.admin-console::before{content:"";position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);background-size:32px 32px;mask-image:linear-gradient(black,transparent 74%)}
+.admin-header{position:relative;z-index:1;min-height:76px;display:flex;align-items:center;justify-content:space-between;gap:18px;padding:14px 18px;border-bottom:1px solid #30363a;background:rgba(18,22,25,.9);box-shadow:0 12px 35px rgba(0,0,0,.22)}
+.admin-heading{display:flex;align-items:center;gap:12px;min-width:0}
+.admin-heading-mark{width:42px;height:42px;flex:0 0 42px;font-size:13px}
+.admin-heading .admin-heading-mark{display:grid;color:var(--green);font:900 13px/1 "Cascadia Mono",monospace;letter-spacing:0;text-transform:none}
+.admin-heading span,.admin-section-title span,.admin-identity-strip span,.admin-metrics span,.admin-inline-form label>span,.admin-price-result span{display:block;color:#65706a;font-size:7px;font-weight:900;letter-spacing:.14em;text-transform:uppercase}
+.admin-heading h2{margin:5px 0 0;font:900 clamp(20px,3vw,27px)/.9 "Bahnschrift Condensed","Arial Narrow",sans-serif;letter-spacing:.025em;text-transform:uppercase}
+.admin-header-actions{display:flex;gap:7px}
+.admin-icon-button{width:38px;height:38px;border:1px solid #3a4246;border-radius:7px 2px 7px 2px;color:#abb4ae;background:#111619;font-size:19px;cursor:pointer;transition:border-color .18s,color .18s,background .18s,transform .18s}
+.admin-icon-button:hover{border-color:rgba(136,216,47,.42);color:#eaffd5;background:#172019}
+.admin-icon-button:active{transform:translateY(1px)}
+.admin-close:hover{border-color:rgba(255,80,97,.46);color:#ff8792;background:#211417}
+.admin-body{position:relative;z-index:1;height:calc(100% - 76px);overflow-y:auto;padding:18px;scrollbar-width:thin;scrollbar-color:#424b46 #101416}
+.admin-identity-strip{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:12px;padding:12px 14px;border:1px solid rgba(136,216,47,.2);border-radius:8px 2px 8px 2px;background:rgba(136,216,47,.04)}
+.admin-identity-strip strong{display:block;margin-top:4px;color:#dcebd3;font:800 11px/1 "Cascadia Mono",monospace}
+.admin-secure-state{display:flex;align-items:center;gap:7px;color:#a9c792;font-size:8px;font-weight:900;letter-spacing:.1em;text-transform:uppercase}
+.admin-metrics{display:grid;grid-template-columns:repeat(3,1fr);margin-bottom:12px;border:1px solid #30363a;border-radius:9px 2px 9px 2px;overflow:hidden;background:rgba(14,18,20,.78)}
+.admin-metrics>div{min-height:86px;padding:14px;border-right:1px solid #2b3135}
+.admin-metrics>div:last-child{border-right:0}
+.admin-metrics strong{display:block;margin-top:8px;color:#edf4e8;font:900 24px/1 "Cascadia Mono",monospace}
+.admin-metrics small{display:block;margin-top:6px;color:#515b55;font-size:7px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+.admin-metrics .admin-policy-live{color:var(--green);font-size:20px;text-transform:uppercase}
+.admin-price-card,.admin-list-card{position:relative;padding:15px;border:1px solid #30373b;border-radius:10px 3px 10px 3px;background:linear-gradient(145deg,rgba(255,255,255,.032),rgba(12,15,17,.84));box-shadow:inset 0 1px rgba(255,255,255,.025)}
+.admin-price-card{margin-bottom:12px;border-color:rgba(241,184,75,.25);background:linear-gradient(135deg,rgba(241,184,75,.045),rgba(12,15,17,.86))}
+.admin-section-title{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:13px}
+.admin-section-title h3{margin:5px 0 0;font:900 19px/.9 "Bahnschrift Condensed","Arial Narrow",sans-serif;letter-spacing:.04em;text-transform:uppercase}
+.admin-section-code{padding:5px 7px;border:1px solid #343b3f;border-radius:4px;color:#758079!important;background:#101416;font:800 7px/1 "Cascadia Mono",monospace!important;letter-spacing:.1em!important}
+.admin-list-card.whitelist .admin-section-code{border-color:rgba(136,216,47,.25);color:#9aca70!important}
+.admin-list-card.trial .admin-section-code,.admin-list-card.trials .admin-section-code{border-color:rgba(241,184,75,.3);color:#e2b75f!important}
+.admin-inline-form{display:grid;grid-template-columns:1fr auto;gap:8px;margin-bottom:12px}
+.admin-inline-form label{min-width:0}
+.admin-inline-form label>span{margin:0 0 5px 2px}
+.admin-inline-form input{width:100%;height:40px;padding:0 11px;border:1px solid #363e42;border-radius:6px 2px 6px 2px;outline:0;color:#e8edef;background:#0c1012;font:700 12px "Cascadia Mono",monospace;cursor:default;transition:border-color .18s,box-shadow .18s}
+.admin-inline-form input:focus{border-color:rgba(136,216,47,.55);box-shadow:0 0 0 3px rgba(136,216,47,.07)}
+.admin-inline-form button{align-self:end;min-width:88px;height:40px;padding:0 13px;border:1px solid rgba(136,216,47,.4);border-radius:6px 2px 6px 2px;color:#dff9c7;background:rgba(136,216,47,.09);font-size:8px;font-weight:1000;letter-spacing:.1em;text-transform:uppercase;cursor:pointer}
+.admin-inline-form button:hover{border-color:rgba(136,216,47,.68);background:rgba(136,216,47,.15)}
+.admin-inline-form.danger button{border-color:rgba(255,80,97,.4);color:#ffb1b8;background:rgba(255,80,97,.08)}
+.admin-inline-form.danger button:hover{border-color:rgba(255,80,97,.68);background:rgba(255,80,97,.14)}
+.admin-inline-form button:disabled,.admin-icon-button:disabled,.admin-id-remove:disabled{opacity:.45;cursor:not-allowed}
+.admin-price-result{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 13px;border:1px solid rgba(241,184,75,.22);border-radius:7px 2px 7px 2px;background:rgba(241,184,75,.035)}
+.admin-price-result strong{display:block;margin-top:5px;color:#ffe0a1;font:900 25px/1 "Cascadia Mono",monospace;letter-spacing:-.04em}
+.admin-price-result a{color:#aeb8b1;font-size:8px;font-weight:900;letter-spacing:.08em;text-decoration:none;text-transform:uppercase}
+.admin-price-result a:hover{color:#fff}
+.admin-list-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.admin-id-list{height:218px;margin:0;padding:0;overflow-y:auto;list-style:none;border:1px solid #292f32;border-radius:6px 2px 6px 2px;background:rgba(7,10,11,.5);scrollbar-width:thin}
+.admin-id-list li{min-height:43px;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 9px;border-bottom:1px solid #252b2e}
+.admin-id-list li:last-child{border-bottom:0}
+.admin-id-main{display:flex;align-items:center;gap:9px;min-width:0}
+.admin-id-dot{width:7px;height:7px;flex:0 0 7px;border-radius:50%;background:var(--green);box-shadow:0 0 8px rgba(136,216,47,.35)}
+.trial .admin-id-dot,.trials .admin-id-dot{background:var(--amber);box-shadow:0 0 8px rgba(241,184,75,.36)}
+.admin-id-main a{overflow:hidden;color:#d1d8d3;font:800 10px/1 "Cascadia Mono",monospace;text-decoration:none;text-overflow:ellipsis;white-space:nowrap}
+.admin-id-main a:hover{color:#fff}
+.admin-id-copy{min-width:0}
+.admin-id-copy a{display:block}
+.admin-trial-meta{display:flex;align-items:flex-start;flex-direction:column;gap:3px;margin-top:5px;color:#66706a;font:800 7px/1.25 "Cascadia Mono",monospace;white-space:nowrap}
+.admin-trial-meta strong{color:#cda756;font:900 7px/1.25 "Cascadia Mono",monospace;text-transform:uppercase}
+.admin-trial-meta time{overflow:hidden;text-overflow:ellipsis}
+.admin-id-list li.trial-expired{background:rgba(255,80,97,.025)}
+.admin-id-list li.trial-expired .admin-id-dot{background:var(--red);box-shadow:0 0 8px rgba(255,80,97,.35)}
+.admin-id-list li.trial-expired .admin-trial-meta strong{color:#ff7f8b}
+.admin-id-list li.admin-id-highlight,.admin-identity-strip.admin-id-highlight{position:relative;z-index:1;animation:adminIdHighlight 4s ease both}
+.admin-id-remove{min-width:62px;height:26px;border:1px solid #3a4245;border-radius:4px 1px 4px 1px;color:#808a84;background:#131719;font-size:7px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
+.admin-id-remove:hover{border-color:rgba(255,80,97,.42);color:#ff8d97;background:rgba(255,80,97,.06)}
+.admin-list-empty{justify-content:center!important;color:#5d6761;font-size:8px;font-weight:800;letter-spacing:.08em;text-align:center;text-transform:uppercase}
+.admin-footnote{margin:13px 2px 0;color:#59635d;font-size:8px;line-height:1.55}
+@keyframes adminFade{from{opacity:0}to{opacity:1}}
+@keyframes adminSlide{from{opacity:0;transform:translateX(38px)}to{opacity:1;transform:none}}
+@keyframes adminIdHighlight{0%,100%{background:transparent;box-shadow:none}8%,78%{background:rgba(241,184,75,.12);box-shadow:inset 3px 0 var(--amber),0 0 25px rgba(241,184,75,.08)}}
+.toast{
+    position:fixed;
+    z-index:50;
+    right:22px;
+    bottom:22px;
+    max-width:min(390px,calc(100% - 44px));
+    padding:13px 15px;
+    border:1px solid rgba(136,216,47,.32);
+    border-radius:7px 2px 7px 2px;
+    color:#dffbc2;
+    background:rgba(17,24,19,.96);
+    box-shadow:0 16px 44px rgba(0,0,0,.5);
+    font-size:11px;
+    font-weight:700;
+    transform:translateY(18px);
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .25s,transform .25s;
+}
+.toast.show{opacity:1;transform:translateY(0)}
+.flash-up td{animation:flashUp .85s ease}
+.flash-down td{animation:flashDown .85s ease}
+:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes rowIn{from{opacity:0;transform:translateX(-9px)}to{opacity:1;transform:none}}
+@keyframes drawLine{to{stroke-dashoffset:0}}
+@keyframes growBar{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(136,216,47,.48)}70%{box-shadow:0 0 0 7px rgba(136,216,47,0)}100%{box-shadow:0 0 0 0 rgba(136,216,47,0)}}
+@keyframes flashUp{0%,100%{filter:none}30%{filter:brightness(1.18);box-shadow:inset 4px 0 rgba(136,216,47,.6)}}
+@keyframes flashDown{0%,100%{filter:none}30%{filter:brightness(1.18);box-shadow:inset 4px 0 rgba(255,80,97,.6)}}
+@media(max-width:900px){
+    .auth-stage{grid-template-columns:1fr;gap:34px;padding:34px 0 70px}.auth-intro{text-align:center}.auth-brand{justify-content:center;margin-bottom:30px}.auth-kicker{justify-content:center}.auth-lede,.auth-signal{margin-left:auto;margin-right:auto}.auth-card{width:min(100%,500px);margin:0 auto}.auth-title{margin:auto}
+    .access-stage{padding-top:24px}.access-grid{grid-template-columns:1fr}.access-story{min-height:360px}.access-story h1{max-width:620px}.access-story-copy{max-width:640px}.lifetime-seal{max-width:420px}
+    .hero-main{grid-template-columns:1fr}.target-module{border-top:1px solid var(--line-soft);border-left:0}.hero::after{font-size:28px}
+    .stats-rail{grid-template-columns:repeat(3,1fr)}.stat:nth-child(3){border-right:0}.stat:nth-child(n+4){border-top:1px solid var(--line-soft)}
+    .market-toolbar{align-items:flex-start;flex-direction:column}.controls{width:100%;justify-content:flex-start}.search-wrap{flex:1}.search-input{width:100%}
+    .admin-console{width:min(680px,calc(100% - 18px))}
+}
+@media(max-width:660px){
+    .auth-stage{width:min(100% - 22px,500px);padding:18px 0 48px}.auth-intro{display:none}.auth-card-head{padding:24px 21px 0}.auth-form{padding:23px 21px 18px}.auth-disclosure{padding:17px 21px 22px}.auth-facts{grid-template-columns:1fr}.auth-card h2{font-size:31px}.account-pill{display:none}.trial-access-pill{padding:6px 8px}.sync-cluster{gap:7px}.logout-button{padding:0 10px}
+    .access-stage{width:min(100% - 18px,560px);padding:14px 0 42px;gap:20px}.access-topbar .brand-subtitle{display:none}.pending-identity{max-width:170px}.access-story{min-height:0;padding:25px 21px}.access-story h1{font-size:45px}.access-story-copy{font-size:11px}.lifetime-seal{margin-top:25px}.access-card-body{padding:22px 18px}.access-card h2{font-size:30px}.access-actions{align-items:stretch;flex-direction:column}.access-secondary{width:100%}.instruction-list li{padding:10px}.offer-amount{font-size:25px}
+    .app-shell{width:min(100% - 16px,1180px);padding-top:14px}.topbar{align-items:flex-start}.brand-subtitle{white-space:normal}.mode-pill{display:none}
+    .hero-copy{padding:24px 20px}.hero-description{font-size:12px}.stats-rail{grid-template-columns:repeat(2,1fr)}.stat:nth-child(2n){border-right:0}.stat:nth-child(3){border-right:1px solid var(--line-soft)}.stat:nth-child(n+3){border-top:1px solid var(--line-soft)}
+    .target-module{padding:22px}.target-ring{width:150px}.market-toolbar{padding:12px}.controls{display:grid;grid-template-columns:1fr auto}.sort-select{max-width:135px}.portfolio-refresh-bar{align-items:flex-start;flex-direction:column}.portfolio-refresh-button{width:100%}.stock-table{min-width:900px}.col-stock{width:29%}.col-price{width:22%}.col-holding{width:19%}.col-forecast{width:17%}.col-signal{width:13%}.col-confidence{display:none}.confidence-cell{display:none}.stock-name{font-size:15px}.predicted-price{font-size:25px}.market-footer{align-items:flex-start;flex-direction:column}.footer-warning{text-align:left}
+    .tooltip-bubble{right:-12px;left:auto;transform:translateY(5px)}.info-tip:hover .tooltip-bubble,.info-tip:focus-within .tooltip-bubble{transform:translateY(0)}.tooltip-bubble::after{right:14px;left:auto;transform:none}
+    .admin-launch{left:10px;bottom:10px;min-width:164px}.admin-launch-live{display:none}.admin-console{width:100%;border-left:0}.admin-header{padding:12px}.admin-heading-mark{width:38px;height:38px;flex-basis:38px}.admin-heading h2{font-size:20px}.admin-body{padding:12px}.admin-identity-strip{align-items:flex-start;flex-direction:column}.admin-metrics>div{min-height:75px;padding:11px}.admin-metrics strong{font-size:19px}.admin-list-grid{grid-template-columns:1fr}.admin-id-list{height:180px}.admin-inline-form{grid-template-columns:1fr 78px}.admin-inline-form button{min-width:0}.admin-price-result{align-items:flex-start;flex-direction:column}
+}
+@media(prefers-reduced-motion:reduce){
+    *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+    .admin-id-highlight{background:rgba(241,184,75,.12)!important;box-shadow:inset 3px 0 var(--amber),0 0 25px rgba(241,184,75,.08)!important}
+}
+</style>
+</head>
+<body>
+<section class="auth-gate" id="authGate" aria-labelledby="authTitle">
+    <canvas class="auth-canvas" id="authCanvas" aria-hidden="true"></canvas>
+    <div class="auth-stage">
+        <div class="auth-intro">
+            <div class="auth-brand">
+                <div class="brand-mark" aria-hidden="true"></div>
+                <div class="brand-copy">
+                    <div class="brand-name">Torn<span>X</span></div>
+                    <p class="brand-subtitle">Torn Stock Market Predictor</p>
+                </div>
+            </div>
+            <div class="auth-kicker">Authorized market intelligence</div>
+            <h1 class="auth-title" id="authTitle">Read the signal. <span>Own the window.</span></h1>
+            <p class="auth-lede">A private gateway to changed-state forecasts across every listed Torn stock.<br>Verify a Limited Access key to unlock the live prediction surface.</p>
+            <div class="auth-signal" aria-hidden="true">
+                <div><span>Required access</span><strong>LIMITED ACCESS</strong></div>
+                <div><span>Validation route</span><strong>TORN API V2</strong></div>
+                <div><span>Market surface</span><strong>35 STOCKS</strong></div>
+            </div>
+        </div>
+
+        <div class="auth-card">
+            <div class="auth-card-head">
+                <div class="auth-security-line"><span>Secure access checkpoint</span><span class="auth-level">Limited+</span></div>
+                <h2>Unlock TornX</h2>
+                <p class="auth-card-subtitle">Your key is checked against Torn directly. Stock predictions remain sealed until access is verified.</p>
+            </div>
+            <form class="auth-form" id="loginForm" novalidate>
+                <label class="auth-label" for="apiKeyInput">Torn API key <small>Limited Access required</small></label>
+                <div class="key-field">
+                    <input class="key-input" id="apiKeyInput" name="api_key" type="password" placeholder="Enter your Limited API key" autocomplete="off" autocapitalize="off" spellcheck="false" required>
+                    <button class="key-toggle" id="keyToggle" type="button" aria-label="Show API key">Show</button>
+                </div>
+                <div class="auth-error" id="authError" role="alert" aria-live="polite"></div>
+                <div class="auth-options">
+                    <label class="remember-option">
+                        <input id="rememberInput" type="checkbox">
+                        <span class="remember-box" aria-hidden="true"></span>
+                        <span>Remember me<small>Keep me signed in on this device</small></span>
+                    </label>
+                </div>
+                <button class="auth-submit" id="loginButton" type="submit"><span class="auth-submit-label">Verify key &amp; enter</span></button>
+            </form>
+            <div class="auth-disclosure">
+                <div class="auth-disclosure-title"><span>API key handling</span><strong>Transparent by design</strong></div>
+                <dl class="auth-facts">
+                    <div><dt>Data storage</dt><dd>Login audit metadata and optional remembered access</dd></div>
+                    <div><dt>Data sharing</dt><dd>Only this server and Torn API validation</dd></div>
+                    <div><dt>Purpose</dt><dd>Verify access and unlock predictions</dd></div>
+                    <div><dt>Key storage</dt><dd>Protected locally when remembered</dd></div>
+                    <div><dt>Required key</dt><dd>Limited Access or higher</dd></div>
+                    <div><dt>Audit logging</dt><dd>IP, Torn user ID, access and client metadata</dd></div>
+                </dl>
+                <p class="auth-warning"><strong>Remembered access:</strong> Your saved sign-in is protected on this device and restored automatically when you return.</p>
+            </div>
+        </div>
+    </div>
+    <div class="auth-footnote">UTC-synchronized / session protected</div>
+</section>
+
+<section class="access-gate" id="accessGate" aria-labelledby="accessTitle" hidden>
+    <canvas class="auth-canvas" id="accessCanvas" aria-hidden="true"></canvas>
+    <div class="access-stage">
+        <header class="access-topbar">
+            <div class="brand">
+                <div class="brand-mark" aria-hidden="true"></div>
+                <div class="brand-copy">
+                    <div class="brand-name">Torn<span>X</span></div>
+                    <p class="brand-subtitle">Private stock intelligence</p>
+                </div>
+            </div>
+            <div class="pending-identity"><span id="pendingAccessType">API key accepted</span><small id="pendingUserIdentity">Torn user</small></div>
+        </header>
+
+        <div class="access-grid">
+            <article class="access-story">
+                <div>
+                    <div class="access-eyebrow" id="accessEyebrow">API key accepted / activation pending</div>
+                    <h1 id="accessTitle">Key accepted. <span>Access comes next.</span></h1>
+                    <p class="access-story-copy" id="accessStoryCopy">Your Torn API key passed validation, but this account is not on the private TornX access list yet. Contact the person who shared this link with you for information about purchasing permanent access to the stock market predictor.</p>
+                </div>
+                <div class="lifetime-seal">
+                    <div class="lifetime-seal-mark">∞</div>
+                    <div><span>Access term</span><strong id="lifetimeAccessTerm">Permanent / lifetime</strong></div>
+                </div>
+            </article>
+
+            <article class="access-card">
+                <div class="access-status-line"><span id="accessStatus">Waiting for activation</span><strong>Private offer</strong></div>
+                <div class="access-card-body">
+                    <h2>Read every instruction</h2>
+                    <p class="access-intro">Your assigned payment amount is private and unique to your Torn ID. Follow every step before sending anything.</p>
+                    <ol class="instruction-list">
+                        <li><span>Contact <strong>only the person who gave you this TornX link</strong> for purchase and payment instructions.</span></li>
+                        <li><span><strong>Never disclose, post, screenshot, hint at, or say your amount first.</strong> Keep it completely private.</span></li>
+                        <li><span>Ask the sharer: <strong>“What exact amount is assigned to my Torn ID?”</strong> Continue only if they state the exact matching amount without help.</span></li>
+                    </ol>
+                    <div class="acknowledgements" id="accessChecks">
+                        <label class="access-check"><input type="checkbox"><span>I will contact only the person who shared this link.</span></label>
+                        <label class="access-check"><input type="checkbox"><span>I will never reveal or hint at my private amount first.</span></label>
+                        <label class="access-check"><input type="checkbox"><span>I will pay only if the sharer independently states the exact amount.</span></label>
+                    </div>
+                    <div class="ack-row"><span id="ackProgress">0 / 3 instructions acknowledged</span><div class="ack-meter" aria-hidden="true"><span id="ackMeter"></span></div></div>
+                    <button class="reveal-button" id="revealOfferButton" type="button" disabled>Read and acknowledge all instructions</button>
+                    <div class="offer-panel" id="offerPanel" hidden>
+                        <span>Your exact private Torn payment</span>
+                        <strong class="offer-amount" id="offerAmount">—</strong>
+                        <small>Pay exactly this amount only after the sharer proves they already know it</small>
+                    </div>
+                    <p class="verification-callout"><strong>Verification rule:</strong> You ask for the amount. They answer first. You never provide clues. No exact match means no payment.</p>
+                    <div class="access-actions">
+                        <button class="access-secondary primary" id="checkAccessButton" type="button">Check activation</button>
+                        <button class="access-secondary" id="pendingLogoutButton" type="button">Use a different key</button>
+                    </div>
+                    <p class="access-legal">You are responsible for following these verification steps. TornX cannot recover transfers made to an unverified person or losses caused by ignoring these instructions.</p>
+                </div>
+            </article>
+        </div>
+    </div>
+</section>
+
+<main class="app-shell" id="dashboard" hidden>
+    <header class="topbar">
+        <div class="brand">
+            <div class="brand-mark" aria-hidden="true"></div>
+            <div class="brand-copy">
+                <div class="brand-name">Torn<span>X</span></div>
+                <p class="brand-subtitle">Torn Stock Market Predictor</p>
+            </div>
+        </div>
+        <div class="sync-cluster">
+            <div class="trial-access-pill" id="trialAccessPill" hidden><span>7-day trial / ends in</span><strong id="trialAccessCountdown">--:--:--</strong></div>
+            <div class="account-pill" id="accountPill" hidden><strong id="accessType">Verified access</strong><small id="userIdentity">Torn user</small></div>
+            <div class="mode-pill" id="modePill">Prediction engine</div>
+            <div class="sync-pill" id="syncPill"><span class="sync-dot"></span><span id="syncText">Connecting</span></div>
+            <button class="logout-button" id="logoutButton" type="button">Log out</button>
+        </div>
+    </header>
+
+    <section class="hero" aria-labelledby="heroTitle">
+        <div class="hero-main">
+            <div class="hero-copy">
+                <div class="eyebrow">Market intelligence / live hash monitor</div>
+                <h1 id="heroTitle">See the next move <span>before it lands.</span></h1>
+                <p class="hero-description">Every listed Torn stock, projected into the next estimated price-change window. Predicted price leads; the latest observed price stays directly beneath it for instant comparison.</p>
+            </div>
+            <div class="target-module">
+                <div class="target-ring" id="targetRing">
+                    <div class="target-content">
+                        <span class="target-label">Predicted change</span>
+                        <strong class="countdown" id="countdown">--:--:--</strong>
+                        <span class="target-date" id="targetDate">Awaiting data</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="stats-rail">
+            <div class="stat"><span class="stat-label">Prediction window</span><span class="stat-value" id="predictionWindowValue">—</span></div>
+            <div class="stat"><span class="stat-label">Forecast model</span><div class="stat-value-line"><span class="stat-value" id="modelValue">—</span><span class="info-tip"><button class="info-trigger" type="button" aria-label="Explain forecast model" aria-describedby="modelTooltip">i</button><span class="tooltip-bubble" id="modelTooltip" role="tooltip">The active changed-state forecast model.</span></span></div></div>
+            <div class="stat"><span class="stat-label">Selective price accuracy</span><span class="stat-value" id="accuracyValue">—</span></div>
+            <div class="stat"><span class="stat-label">Fee-cleared signals</span><span class="stat-value" id="eligibleValue">—</span></div>
+            <div class="stat"><span class="stat-label">Selective tier</span><span class="stat-value" id="selectiveValue">—</span></div>
+        </div>
+    </section>
+
+    <section class="market-panel" aria-labelledby="marketTitle">
+        <div class="market-toolbar">
+            <div class="toolbar-title">
+                <div class="toolbar-title-icon" aria-hidden="true">↗</div>
+                <div><strong id="marketTitle">Stock Market</strong><small id="resultCount">35 listed companies</small></div>
+            </div>
+            <div class="controls">
+                <label class="search-wrap"><span hidden>Search stocks</span><input class="search-input" id="searchInput" type="search" placeholder="Search name or acronym" autocomplete="off"></label>
+                <label><span hidden>Sort stocks</span><select class="sort-select" id="sortSelect">
+                    <option value="price-desc">Price: high to low</option>
+                    <option value="price-asc">Price: low to high</option>
+                    <option value="move-desc">Largest movement</option>
+                    <option value="acronym">Acronyms A–Z</option>
+                </select></label>
+                <button class="icon-button" id="refreshButton" type="button" title="Check for updated prediction" aria-label="Check for updated prediction">↻</button>
+            </div>
+        </div>
+        <div class="filters" role="group" aria-label="Filter stocks">
+            <button class="filter-button active" type="button" data-filter="ALL">All stocks</button>
+            <button class="filter-button" type="button" data-filter="OWNED">Owned holdings</button>
+            <button class="filter-button" type="button" data-filter="BUY">Buy</button>
+            <button class="filter-button" type="button" data-filter="SELL_OR_AVOID">Sell / avoid</button>
+            <button class="filter-button" type="button" data-filter="HOLD">Hold</button>
+            <button class="filter-button" type="button" data-filter="ELIGIBLE">Fee-cleared</button>
+        </div>
+        <div class="portfolio-refresh-bar paused" id="portfolioRefreshBar">
+            <div class="portfolio-refresh-status"><span class="portfolio-refresh-dot" aria-hidden="true"></span><span class="portfolio-refresh-text" id="portfolioRefreshText">Holdings refresh is paused</span></div>
+            <button class="portfolio-refresh-button" id="portfolioRefreshButton" type="button" disabled>Refresh holdings</button>
+        </div>
+        <div class="table-wrap" id="tableWrap">
+            <table class="stock-table">
+                <caption>Predicted and current prices for Torn stocks</caption>
+                <thead><tr>
+                    <th class="col-stock" scope="col">Stock name</th>
+                    <th class="col-price" scope="col">Predicted price <small>/ current</small></th>
+                    <th class="col-holding" scope="col">Owned value <small>/ gross profit</small></th>
+                    <th class="col-forecast" scope="col">Forecast</th>
+                    <th class="col-signal" scope="col">Signal</th>
+                    <th class="col-confidence" scope="col">Signal strength</th>
+                </tr></thead>
+                <tbody id="stockRows"></tbody>
+            </table>
+            <div class="empty-state" id="emptyState">
+                <div class="empty-icon">TX</div>
+                <strong id="emptyTitle">Waiting for prediction data</strong>
+                <p id="emptyMessage">Waiting for the latest prediction snapshot. The dashboard checks for updates automatically every three seconds.</p>
+            </div>
+        </div>
+        <footer class="market-footer">
+            <div class="hash-readout">Snapshot hash: <span id="hashValue">not loaded</span></div>
+            <div class="footer-warning">Model output · 0.1% selling fee included · Not financial advice</div>
+        </footer>
+    </section>
+</main>
+
+<div id="adminPanelMount"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+const stockNames={
+    TSB:{id:1,name:"Torn & Shanghai Banking"},
+    TCI:{id:2,name:"Torn City Investments"},
+    SYS:{id:3,name:"Syscore MFG"},
+    LAG:{id:4,name:"Legal Authorities Group"},
+    IOU:{id:5,name:"Insured On Us"},
+    GRN:{id:6,name:"Grain"},
+    THS:{id:7,name:"Torn City Health Service"},
+    YAZ:{id:8,name:"Yazoo"},
+    TCT:{id:9,name:"The Torn City Times"},
+    CNC:{id:10,name:"Crude & Co"},
+    MSG:{id:11,name:"Messaging Inc"},
+    TMI:{id:12,name:"TC Music Industries"},
+    TCP:{id:13,name:"TC Media Productions"},
+    IIL:{id:14,name:"I Industries Ltd"},
+    FHG:{id:15,name:"Feathery Hotels Group"},
+    SYM:{id:16,name:"Symbiotic Ltd"},
+    LSC:{id:17,name:"Lucky Shot Casino"},
+    PRN:{id:18,name:"Performance Ribaldry"},
+    EWM:{id:19,name:"Eaglewood Mercenary"},
+    TCM:{id:20,name:"Torn City Motors"},
+    ELT:{id:21,name:"Empty Lunchbox Traders"},
+    HRG:{id:22,name:"Home Retail Group"},
+    TGP:{id:23,name:"Tell Group Plc"},
+    MUN:{id:24,name:"Munster Beverage Corp"},
+    WSU:{id:25,name:"West Side University"},
+    IST:{id:26,name:"International School TC"},
+    BAG:{id:27,name:"Big Al's Gun Shop"},
+    EVL:{id:28,name:"Evil Ducks Candy Corp"},
+    MCS:{id:29,name:"Mc Smoogle Corp"},
+    WLT:{id:30,name:"Wind Lines Travel"},
+    TCC:{id:31,name:"Torn City Clothing"},
+    ASS:{id:32,name:"Alcoholics Synonymous"},
+    CBD:{id:33,name:"Herbal Releaf Co"},
+    LOS:{id:34,name:"Lo Squalo Waste"},
+    PTS:{id:35,name:"PointLess"}
+};
+
+const logoBase="https://www.torn.com/images/v2/stock-market/dark-mode/logos";
+const PORTFOLIO_REFRESH_MS=60_000;
+const PORTFOLIO_RETRY_MS=60_000;
+const MARKET_STATUS_POLL_MS=3_000;
+const vaultKeys=["tornx.vault.north","tornx.vault.vector","tornx.vault.signal"];
+const vaultManifestKey="tornx.vault.manifest";
+const vaultNamespace=`TornX|${location.origin}|remember-v1`;
+const vaultEncoder=new TextEncoder();
+const vaultDecoder=new TextDecoder();
+const state={
+    data:null,
+    hash:null,
+    history:new Map(),
+    historyVersion:null,
+    cacheVersion:null,
+    predictionVersion:null,
+    currentPrices:new Map(),
+    portfolio:new Map(),
+    portfolioStatus:"idle",
+    portfolioFetchedAt:0,
+    portfolioChecking:false,
+    portfolioTimer:null,
+    portfolioNextRefreshAt:0,
+    portfolioRetryUntil:0,
+    portfolioError:"",
+    portfolioController:null,
+    expandedStockId:null,
+    stockRowNodes:new Map(),
+    holdingDetailNodes:new Map(),
+    filter:"ALL",
+    query:"",
+    sort:"price-desc",
+    checking:false,
+    toastTimer:null,
+    pollTimer:null,
+    lastCheck:null,
+    authenticated:false,
+    authorized:false,
+    authenticating:false,
+    authRetryUntil:0,
+    authRetryTimer:null,
+    authRetryMessage:"",
+    authRetryUseSaved:false,
+    authRetrySilent:false,
+    authProfile:null,
+    authBooting:false,
+    accessPollTimer:null,
+    checkingAccess:false,
+    adminLoading:false,
+    adminBusy:false,
+    adminTimer:null,
+    adminCountdownTimer:null,
+    adminMembership:new Map(),
+    adminFocus:null,
+    serverTimeOffset:0,
+    trialEndAt:0,
+    trialTimer:null,
+    trialExpiryChecking:false
+};
+const elements={
+    authGate:document.querySelector("#authGate"),
+    authCanvas:document.querySelector("#authCanvas"),
+    dashboard:document.querySelector("#dashboard"),
+    loginForm:document.querySelector("#loginForm"),
+    apiKey:document.querySelector("#apiKeyInput"),
+    keyToggle:document.querySelector("#keyToggle"),
+    remember:document.querySelector("#rememberInput"),
+    loginButton:document.querySelector("#loginButton"),
+    authError:document.querySelector("#authError"),
+    accountPill:document.querySelector("#accountPill"),
+    accessType:document.querySelector("#accessType"),
+    userIdentity:document.querySelector("#userIdentity"),
+    trialAccessPill:document.querySelector("#trialAccessPill"),
+    trialAccessCountdown:document.querySelector("#trialAccessCountdown"),
+    logout:document.querySelector("#logoutButton"),
+    accessGate:document.querySelector("#accessGate"),
+    accessCanvas:document.querySelector("#accessCanvas"),
+    pendingAccessType:document.querySelector("#pendingAccessType"),
+    pendingUserIdentity:document.querySelector("#pendingUserIdentity"),
+    accessStatus:document.querySelector("#accessStatus"),
+    accessEyebrow:document.querySelector("#accessEyebrow"),
+    accessTitle:document.querySelector("#accessTitle"),
+    accessStoryCopy:document.querySelector("#accessStoryCopy"),
+    lifetimeAccessTerm:document.querySelector("#lifetimeAccessTerm"),
+    accessChecks:[...document.querySelectorAll("#accessChecks input")],
+    ackProgress:document.querySelector("#ackProgress"),
+    ackMeter:document.querySelector("#ackMeter"),
+    revealOffer:document.querySelector("#revealOfferButton"),
+    offerPanel:document.querySelector("#offerPanel"),
+    offerAmount:document.querySelector("#offerAmount"),
+    checkAccess:document.querySelector("#checkAccessButton"),
+    pendingLogout:document.querySelector("#pendingLogoutButton"),
+    adminMount:document.querySelector("#adminPanelMount"),
+    rows:document.querySelector("#stockRows"),
+    empty:document.querySelector("#emptyState"),
+    emptyTitle:document.querySelector("#emptyTitle"),
+    emptyMessage:document.querySelector("#emptyMessage"),
+    syncPill:document.querySelector("#syncPill"),
+    syncText:document.querySelector("#syncText"),
+    countdown:document.querySelector("#countdown"),
+    targetDate:document.querySelector("#targetDate"),
+    targetRing:document.querySelector("#targetRing"),
+    predictionWindow:document.querySelector("#predictionWindowValue"),
+    model:document.querySelector("#modelValue"),
+    modelTooltip:document.querySelector("#modelTooltip"),
+    accuracy:document.querySelector("#accuracyValue"),
+    eligible:document.querySelector("#eligibleValue"),
+    selective:document.querySelector("#selectiveValue"),
+    resultCount:document.querySelector("#resultCount"),
+    hash:document.querySelector("#hashValue"),
+    search:document.querySelector("#searchInput"),
+    sort:document.querySelector("#sortSelect"),
+    refresh:document.querySelector("#refreshButton"),
+    portfolioRefreshBar:document.querySelector("#portfolioRefreshBar"),
+    portfolioRefreshText:document.querySelector("#portfolioRefreshText"),
+    portfolioRefreshButton:document.querySelector("#portfolioRefreshButton"),
+    toast:document.querySelector("#toast")
+};
+
+function bytesToBase64(bytes){
+    let binary="";
+    bytes.forEach(byte=>binary+=String.fromCharCode(byte));
+    return btoa(binary);
+}
+
+function base64ToBytes(value){
+    const binary=atob(String(value));
+    return Uint8Array.from(binary,character=>character.charCodeAt(0));
+}
+
+function randomBytes(length){
+    return crypto.getRandomValues(new Uint8Array(length));
+}
+
+function xorBytes(...values){
+    const output=new Uint8Array(values[0].length);
+    for(let index=0;index<output.length;index++){
+        output[index]=values.reduce((byte,value)=>byte^value[index],0);
+    }
+    return output;
+}
+
+function forgetCredential(){
+    vaultKeys.forEach(key=>localStorage.removeItem(key));
+    localStorage.removeItem(vaultManifestKey);
+}
+
+async function vaultKey(material,salt,index,length){
+    return crypto.subtle.deriveKey(
+        {
+            name:"PBKDF2",
+            salt,
+            iterations:140000+index*17000,
+            hash:"SHA-256"
+        },
+        material,
+        {name:"AES-GCM",length:256},
+        false,
+        ["encrypt","decrypt"]
+    );
+}
+
+function vaultAdditionalData(index,length){
+    return vaultEncoder.encode(`${vaultNamespace}|${index}|${length}`);
+}
+
+function vaultChecksum(bytes){
+    let hash=2166136261;
+    bytes.forEach(byte=>hash=Math.imul(hash^byte,16777619)>>>0);
+    return hash.toString(16).padStart(8,"0");
+}
+
+function maskVaultShare(share,salt,index,reverse=false){
+    const output=new Uint8Array(share.length);
+    if(!share.length)return output;
+    const offset=salt[index%salt.length]%share.length;
+    for(let position=0;position<share.length;position++){
+        const source=(position+offset)%share.length;
+        const mask=salt[(position*5+index*3)%salt.length]
+            ^((position*29+index*53)&255);
+        if(reverse)output[source]=share[position]^mask;
+        else output[position]=share[source]^mask;
+    }
+    return output;
+}
+
+function rememberCredentialHttp(apiKey){
+    const clear=vaultEncoder.encode(apiKey);
+    const shareA=randomBytes(clear.length);
+    const shareB=randomBytes(clear.length);
+    const shares=[shareA,shareB,xorBytes(clear,shareA,shareB)];
+    const records=shares.map((share,index)=>{
+        const salt=randomBytes(16);
+        return JSON.stringify({
+            v:2,
+            mode:"split-mask",
+            salt:bytesToBase64(salt),
+            data:bytesToBase64(maskVaultShare(share,salt,index))
+        });
+    });
+    forgetCredential();
+    records.forEach((record,index)=>localStorage.setItem(vaultKeys[index],record));
+    localStorage.setItem(vaultManifestKey,JSON.stringify({
+        v:2,
+        mode:"split-mask",
+        length:clear.length,
+        checksum:vaultChecksum(clear),
+        parts:3
+    }));
+}
+
+async function rememberCredential(apiKey){
+    if(!window.crypto?.getRandomValues)throw new Error("Browser vault unavailable");
+    if(!window.crypto.subtle)return rememberCredentialHttp(apiKey);
+    const characters=Array.from(apiKey);
+    const shards=["","",""];
+    characters.forEach((character,index)=>shards[index%3]+=character);
+    const secret=randomBytes(32);
+    const shareA=randomBytes(32);
+    const shareB=randomBytes(32);
+    const shares=[shareA,shareB,xorBytes(secret,shareA,shareB)];
+    const material=await crypto.subtle.importKey(
+        "raw",secret,"PBKDF2",false,["deriveKey"]
+    );
+    const records=await Promise.all(shards.map(async(shard,index)=>{
+        const salt=randomBytes(16);
+        const iv=randomBytes(12);
+        const key=await vaultKey(material,salt,index,characters.length);
+        const data=await crypto.subtle.encrypt(
+            {
+                name:"AES-GCM",
+                iv,
+                additionalData:vaultAdditionalData(index,characters.length)
+            },
+            key,
+            vaultEncoder.encode(shard)
+        );
+        return JSON.stringify({
+            v:1,
+            salt:bytesToBase64(salt),
+            iv:bytesToBase64(iv),
+            data:bytesToBase64(new Uint8Array(data)),
+            share:bytesToBase64(shares[index])
+        });
+    }));
+    forgetCredential();
+    records.forEach((record,index)=>localStorage.setItem(vaultKeys[index],record));
+    localStorage.setItem(vaultManifestKey,JSON.stringify({
+        v:1,mode:"aes-gcm",length:characters.length,parts:3
+    }));
+}
+
+async function restoreCredential(){
+    const manifestText=localStorage.getItem(vaultManifestKey);
+    if(!manifestText)return "";
+    try{
+        const manifest=JSON.parse(manifestText);
+        const records=vaultKeys.map(key=>JSON.parse(localStorage.getItem(key)));
+        const mode=manifest.mode||"aes-gcm";
+        if(mode==="split-mask"){
+            if(
+                manifest.v!==2||manifest.parts!==3
+                ||!Number.isInteger(manifest.length)||manifest.length<8
+                ||records.some(record=>
+                    record?.v!==2||record.mode!=="split-mask"
+                )
+            )throw new Error("Invalid saved login");
+            const shares=records.map((record,index)=>{
+                const salt=base64ToBytes(record.salt);
+                const data=base64ToBytes(record.data);
+                if(salt.length!==16||data.length!==manifest.length){
+                    throw new Error("Invalid saved login");
+                }
+                return maskVaultShare(data,salt,index,true);
+            });
+            const clear=xorBytes(...shares);
+            if(vaultChecksum(clear)!==manifest.checksum){
+                throw new Error("Invalid saved login");
+            }
+            const apiKey=vaultDecoder.decode(clear);
+            if(apiKey.length<8)throw new Error("Invalid saved login");
+            return apiKey;
+        }
+        if(mode!=="aes-gcm")throw new Error("Invalid saved login");
+        if(!window.crypto?.subtle){
+            throw new Error("This saved vault cannot be restored in the current browser context");
+        }
+        if(
+            manifest.v!==1||manifest.parts!==3
+            ||!Number.isInteger(manifest.length)||manifest.length<8
+            ||records.some(record=>record?.v!==1)
+        )throw new Error("Invalid saved login");
+        const shares=records.map(record=>base64ToBytes(record.share));
+        if(shares.some(share=>share.length!==32))throw new Error("Invalid saved login");
+        const secret=xorBytes(...shares);
+        const material=await crypto.subtle.importKey(
+            "raw",secret,"PBKDF2",false,["deriveKey"]
+        );
+        const shards=await Promise.all(records.map(async(record,index)=>{
+            const salt=base64ToBytes(record.salt);
+            const iv=base64ToBytes(record.iv);
+            const key=await vaultKey(material,salt,index,manifest.length);
+            const clear=await crypto.subtle.decrypt(
+                {
+                    name:"AES-GCM",
+                    iv,
+                    additionalData:vaultAdditionalData(index,manifest.length)
+                },
+                key,
+                base64ToBytes(record.data)
+            );
+            return Array.from(vaultDecoder.decode(clear));
+        }));
+        let apiKey="";
+        for(let index=0;index<manifest.length;index++){
+            const character=shards[index%3][Math.floor(index/3)];
+            if(character===undefined)throw new Error("Invalid saved login");
+            apiKey+=character;
+        }
+        if(apiKey.length<8)throw new Error("Invalid saved login");
+        return apiKey;
+    }catch(error){
+        forgetCredential();
+        throw error;
+    }
+}
+
+async function authFetch(path,options={}){
+    const controller=new AbortController();
+    const timeout=setTimeout(()=>controller.abort(),18000);
+    try{
+        const response=await fetch(path,{
+            cache:"no-store",
+            credentials:"same-origin",
+            signal:controller.signal,
+            ...options,
+            headers:{
+                ...(options.body?{"Content-Type":"application/json"}:{}),
+                ...(options.headers||{})
+            }
+        });
+        const payload=await response.json().catch(()=>({}));
+        if(!response.ok){
+            const error=new Error(payload.message||`HTTP ${response.status}`);
+            error.status=response.status;
+            error.code=payload.error||"request_failed";
+            error.payload=payload;
+            error.retryAfter=Number(payload.retry_after);
+            throw error;
+        }
+        return payload;
+    }catch(error){
+        if(error?.name==="TypeError"&&!error.code)error.code="network_error";
+        throw error;
+    }finally{
+        clearTimeout(timeout);
+    }
+}
+
+async function fetchAdminPanelMarkup(){
+    const controller=new AbortController();
+    const timeout=setTimeout(()=>controller.abort(),18000);
+    try{
+        const response=await fetch(`./api/admin/panel?v=${Date.now()}`,{
+            cache:"no-store",credentials:"same-origin",signal:controller.signal
+        });
+        if(!response.ok){
+            const error=new Error(response.status===404
+                ?"Administrator panel is unavailable"
+                :`HTTP ${response.status}`
+            );
+            error.status=response.status;
+            throw error;
+        }
+        return await response.text();
+    }finally{
+        clearTimeout(timeout);
+    }
+}
+
+function adminNode(selector){
+    return elements.adminMount.querySelector(selector);
+}
+
+function unmountAdminPanel(){
+    clearInterval(state.adminTimer);
+    clearInterval(state.adminCountdownTimer);
+    state.adminTimer=null;
+    state.adminCountdownTimer=null;
+    state.adminLoading=false;
+    state.adminBusy=false;
+    state.adminMembership=new Map();
+    state.adminFocus=null;
+    document.body.classList.remove("admin-console-open");
+    elements.adminMount.replaceChildren();
+}
+
+function openAdminPanel(){
+    const overlay=adminNode("#adminOverlay");
+    if(!overlay)return;
+    overlay.hidden=false;
+    document.body.classList.add("admin-console-open");
+    adminNode("#adminCloseButton")?.focus();
+    refreshAdminState(true);
+}
+
+function closeAdminPanel(){
+    const overlay=adminNode("#adminOverlay");
+    if(!overlay)return;
+    overlay.hidden=true;
+    document.body.classList.remove("admin-console-open");
+    adminNode("#adminLaunchButton")?.focus();
+}
+
+function setAdminBusy(busy){
+    state.adminBusy=busy;
+    elements.adminMount.querySelectorAll(
+        "form input,form button,#adminRefreshButton,.admin-id-remove"
+    ).forEach(control=>control.disabled=busy);
+}
+
+function validAdminId(input){
+    const value=input.value.trim();
+    if(!/^[1-9][0-9]{0,9}$/.test(value)){
+        throw new Error("Enter a valid Torn user ID");
+    }
+    const userId=Number(value);
+    if(!Number.isSafeInteger(userId)||userId>9_999_999_999){
+        throw new Error("Enter a valid Torn user ID");
+    }
+    return userId;
+}
+
+function epochMilliseconds(value){
+    const timestamp=Number(value);
+    if(!Number.isFinite(timestamp)||timestamp<=0)return 0;
+    return timestamp<1e12?timestamp*1000:timestamp;
+}
+
+function serverNow(){
+    return Date.now()+state.serverTimeOffset;
+}
+
+function syncServerClock(payload){
+    const direct=epochMilliseconds(payload?.server_time??payload?.trial?.server_time);
+    if(direct){
+        state.serverTimeOffset=direct-Date.now();
+        return;
+    }
+    const trial=payload?.trial;
+    const endAt=epochMilliseconds(trial?.end_timestamp);
+    const remaining=Number(trial?.remaining_seconds);
+    if(endAt&&Number.isFinite(remaining)){
+        state.serverTimeOffset=endAt-Math.max(0,remaining)*1000-Date.now();
+    }
+}
+
+function durationCountdown(milliseconds){
+    const seconds=Math.max(0,Math.ceil(milliseconds/1000));
+    const days=Math.floor(seconds/86400);
+    const hours=Math.floor(seconds%86400/3600);
+    const minutes=Math.floor(seconds%3600/60);
+    const remainder=seconds%60;
+    const clock=[hours,minutes,remainder]
+        .map(value=>String(value).padStart(2,"0"))
+        .join(":");
+    return days?`${days}d ${clock}`:clock;
+}
+
+function utcEndLabel(timestamp){
+    const milliseconds=epochMilliseconds(timestamp);
+    if(!milliseconds)return "End time unavailable";
+    return `Ends ${new Date(milliseconds).toLocaleString("en-GB",{
+        timeZone:"UTC",day:"2-digit",month:"short",year:"numeric",
+        hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false
+    })} UTC`;
+}
+
+function renderAdminIds(selector,values,listName){
+    const list=adminNode(selector);
+    if(!list)return;
+    const ids=Array.isArray(values)
+        ?values.filter(Number.isSafeInteger)
+        :[];
+    list.replaceChildren();
+    if(!ids.length){
+        const empty=document.createElement("li");
+        empty.className="admin-list-empty";
+        empty.textContent=listName==="whitelist"
+            ?"No whitelisted users"
+            :"No administrators";
+        list.append(empty);
+        return;
+    }
+    ids.forEach(userId=>{
+        const item=document.createElement("li");
+        item.dataset.adminList=listName;
+        item.dataset.list=listName;
+        item.dataset.userId=String(userId);
+        const identity=document.createElement("div");
+        identity.className="admin-id-main";
+        const dot=document.createElement("span");
+        dot.className="admin-id-dot";
+        dot.setAttribute("aria-hidden","true");
+        const profile=document.createElement("a");
+        profile.href=`https://www.torn.com/profiles.php?XID=${userId}`;
+        profile.target="_blank";
+        profile.rel="noopener noreferrer";
+        profile.textContent=String(userId);
+        const remove=document.createElement("button");
+        remove.className="admin-id-remove";
+        remove.type="button";
+        remove.dataset.adminAction=`${listName}_remove`;
+        remove.dataset.userId=String(userId);
+        remove.textContent="Remove";
+        identity.append(dot,profile);
+        item.append(identity,remove);
+        list.append(item);
+    });
+}
+
+function normalizeTrial(value){
+    if(!value||typeof value!=="object")return null;
+    const userId=Number(value.user_id??value.id);
+    const endTimestamp=Number(value.end_timestamp??value.end_time??value.expires_at);
+    if(!Number.isSafeInteger(userId)||!Number.isFinite(endTimestamp))return null;
+    const remainingSeconds=Number(value.remaining_seconds);
+    const expired=value.expired===true
+        ||String(value.status||"").toLowerCase()==="expired"
+        ||(Number.isFinite(remainingSeconds)
+            ?remainingSeconds<=0
+            :epochMilliseconds(endTimestamp)<=serverNow());
+    return{userId,endTimestamp,remainingSeconds,expired}
+}
+
+function renderAdminTrials(values){
+    const list=adminNode("#adminTrialList");
+    if(!list)return;
+    const trials=(Array.isArray(values)?values:[])
+        .map(normalizeTrial)
+        .filter(Boolean);
+    list.replaceChildren();
+    if(!trials.length){
+        const empty=document.createElement("li");
+        empty.className="admin-list-empty";
+        empty.textContent="No registered trials";
+        list.append(empty);
+        return;
+    }
+    trials.forEach(trial=>{
+        const endAt=epochMilliseconds(trial.endTimestamp);
+        const item=document.createElement("li");
+        item.dataset.adminList="trials";
+        item.dataset.list="trials";
+        item.dataset.userId=String(trial.userId);
+        item.dataset.trialEnd=String(endAt);
+        item.classList.toggle("trial-expired",trial.expired);
+        const identity=document.createElement("div");
+        identity.className="admin-id-main";
+        const dot=document.createElement("span");
+        dot.className="admin-id-dot";
+        dot.setAttribute("aria-hidden","true");
+        const copy=document.createElement("div");
+        copy.className="admin-id-copy";
+        const profile=document.createElement("a");
+        profile.href=`https://www.torn.com/profiles.php?XID=${trial.userId}`;
+        profile.target="_blank";
+        profile.rel="noopener noreferrer";
+        profile.textContent=String(trial.userId);
+        const meta=document.createElement("span");
+        meta.className="admin-trial-meta";
+        const remaining=document.createElement("strong");
+        remaining.className="admin-trial-remaining";
+        const end=document.createElement("time");
+        end.dateTime=endAt?new Date(endAt).toISOString():"";
+        end.textContent=utcEndLabel(trial.endTimestamp);
+        meta.append(remaining,end);
+        copy.append(profile,meta);
+        const remove=document.createElement("button");
+        remove.className="admin-id-remove";
+        remove.type="button";
+        remove.dataset.adminAction="trial_remove";
+        remove.dataset.userId=String(trial.userId);
+        remove.textContent="Remove";
+        identity.append(dot,copy);
+        item.append(identity,remove);
+        list.append(item);
+    });
+    updateAdminTrialCountdowns();
+}
+
+function updateAdminTrialCountdowns(){
+    elements.adminMount.querySelectorAll("[data-trial-end]").forEach(item=>{
+        const endAt=Number(item.dataset.trialEnd);
+        const remaining=item.querySelector(".admin-trial-remaining");
+        const remainingMilliseconds=endAt-serverNow();
+        const expired=!Number.isFinite(endAt)||remainingMilliseconds<=0;
+        item.classList.toggle("trial-expired",expired);
+        if(remaining)remaining.textContent=expired
+            ?"EXPIRED"
+            :`${durationCountdown(remainingMilliseconds)} left`;
+    });
+}
+
+function adminListLabel(listName){
+    return ({
+        whitelist:"the permanent whitelist",
+        trials:"the 7-day trial list",
+        admins:"the administrator list",
+        legacy_blacklist:"the legacy deny list"
+    })[listName]||"an access list";
+}
+
+function focusAdminEntry(listName,userId,persist=true){
+    if(persist)state.adminFocus={list:listName,userId,until:Date.now()+4200};
+    let target=elements.adminMount.querySelector(
+        `[data-admin-list="${listName}"][data-user-id="${userId}"]`
+    );
+    if(!target&&listName==="admins"){
+        const operator=adminNode("#adminOperatorId");
+        if(operator?.textContent.includes(String(userId))){
+            target=operator.closest(".admin-identity-strip");
+        }
+    }
+    if(!target)return false;
+    target.classList.remove("admin-id-highlight");
+    void target.offsetWidth;
+    target.classList.add("admin-id-highlight");
+    target.scrollIntoView({behavior:"smooth",block:"center"});
+    const deadline=state.adminFocus?.list===listName
+        &&state.adminFocus?.userId===userId
+        ?state.adminFocus.until
+        :Date.now()+4200;
+    setTimeout(()=>{
+        if(target.isConnected)target.classList.remove("admin-id-highlight");
+        if(
+            state.adminFocus?.list===listName
+            &&state.adminFocus?.userId===userId
+            &&state.adminFocus.until<=Date.now()
+        )state.adminFocus=null;
+    },Math.max(0,deadline-Date.now()));
+    return true;
+}
+
+function restoreAdminFocus(){
+    const focus=state.adminFocus;
+    if(!focus)return;
+    if(focus.until<=Date.now()){
+        state.adminFocus=null;
+        return;
+    }
+    requestAnimationFrame(()=>focusAdminEntry(focus.list,focus.userId,false));
+}
+
+function notifyAdminDuplicate(payload,userId){
+    const id=Number(payload?.focus_user_id??payload?.user_id??userId);
+    const listName=payload?.focus_list||payload?.existing_list
+        ||state.adminMembership.get(id);
+    showToast(`Torn ID ${id} is already in ${adminListLabel(listName)}`);
+    requestAnimationFrame(()=>focusAdminEntry(listName,id));
+}
+
+function renderAdminState(payload){
+    syncServerClock(payload);
+    const whitelist=Array.isArray(payload.whitelist)?payload.whitelist:[];
+    const trials=Array.isArray(payload.trials)?payload.trials:[];
+    const admins=Array.isArray(payload.admins)
+        ?payload.admins
+        :(Number.isSafeInteger(payload.admin_user_id)?[payload.admin_user_id]:[]);
+    const operator=adminNode("#adminOperatorId");
+    const whitelistCount=adminNode("#adminWhitelistCount");
+    const trialCount=adminNode("#adminTrialCount");
+    if(operator)operator.textContent=`Torn ID ${payload.admin_user_id??"—"}`;
+    if(whitelistCount)whitelistCount.textContent=String(whitelist.length);
+    if(trialCount)trialCount.textContent=String(trials.length);
+    state.adminMembership=new Map();
+    admins.filter(Number.isSafeInteger).forEach(id=>state.adminMembership.set(id,"admins"));
+    whitelist.filter(Number.isSafeInteger).forEach(id=>{
+        if(!state.adminMembership.has(id))state.adminMembership.set(id,"whitelist");
+    });
+    trials.map(normalizeTrial).filter(Boolean).forEach(trial=>{
+        if(!state.adminMembership.has(trial.userId)){
+            state.adminMembership.set(trial.userId,"trials");
+        }
+    });
+    renderAdminIds("#adminWhitelistList",whitelist,"whitelist");
+    renderAdminTrials(trials);
+    restoreAdminFocus();
+}
+
+function handleAdminError(error,message="Admin request failed"){
+    if(handleSessionInvalidated(error))return;
+    if(handleTrialExpired(error))return;
+    if(error.status===401){
+        unmountAdminPanel();
+        lockDashboard("Your session expired. Sign in again");
+        return;
+    }
+    if(error.status===403||error.status===404){
+        if(state.authProfile)state.authProfile.is_admin=false;
+        unmountAdminPanel();
+        showToast("Administrator access is no longer available");
+        return;
+    }
+    showToast(error.message||message);
+}
+
+async function refreshAdminState(showMessage=false,force=false){
+    if(!adminNode("#adminOverlay")||(state.adminBusy&&!force))return;
+    try{
+        const payload=await authFetch("./api/admin/state");
+        renderAdminState(payload);
+        if(showMessage)showToast("Admin access lists refreshed");
+    }catch(error){
+        handleAdminError(error,"Could not refresh admin access lists");
+    }
+}
+
+async function loadAdminPanel(){
+    if(state.adminLoading||adminNode("#adminOverlay"))return;
+    state.adminLoading=true;
+    try{
+        const markup=await fetchAdminPanelMarkup();
+        if(!state.authProfile?.is_admin)return;
+        elements.adminMount.innerHTML=markup;
+        await refreshAdminState(false,true);
+        clearInterval(state.adminTimer);
+        clearInterval(state.adminCountdownTimer);
+        state.adminTimer=setInterval(()=>refreshAdminState(false),10000);
+        state.adminCountdownTimer=setInterval(updateAdminTrialCountdowns,1000);
+    }catch(error){
+        handleAdminError(error,"Could not load the admin console");
+    }finally{
+        state.adminLoading=false;
+    }
+}
+
+async function runAdminAction(action,userId){
+    return authFetch("./api/admin/action",{
+        method:"POST",
+        body:JSON.stringify({action,user_id:userId})
+    });
+}
+
+async function submitAdminList(form,listName){
+    if(state.adminBusy)return;
+    const input=form.querySelector("input");
+    let userId;
+    try{userId=validAdminId(input)}
+    catch(error){showToast(error.message);input.focus();return}
+    setAdminBusy(true);
+    try{
+        const payload=await runAdminAction(`${listName}_add`,userId);
+        input.value="";
+        await refreshAdminState(false,true);
+        const verb=listName==="whitelist"
+            ?"Whitelisted"
+            :"Started a 7-day trial for";
+        if(payload.changed)showToast(`${verb} Torn ID ${userId}`);
+        else notifyAdminDuplicate(payload,userId);
+    }catch(error){
+        if(error.code==="already_added"||error.code==="user_already_added"){
+            input.value="";
+            await refreshAdminState(false,true);
+            notifyAdminDuplicate(error.payload,userId);
+        }else handleAdminError(error,"Could not update the access list");
+    }finally{
+        if(adminNode("#adminOverlay"))setAdminBusy(false);
+    }
+}
+
+async function removeAdminId(action,userId){
+    if(state.adminBusy)return;
+    setAdminBusy(true);
+    try{
+        const payload=await runAdminAction(action,userId);
+        await refreshAdminState(false,true);
+        const verb=action==="whitelist_remove"
+            ?"Removed from whitelist"
+            :"Removed trial for";
+        showToast(payload.changed
+            ?`${verb} Torn ID ${userId}`
+            :`Torn ID ${userId} was not on that list`
+        );
+    }catch(error){
+        handleAdminError(error,"Could not update the access list");
+    }finally{
+        if(adminNode("#adminOverlay"))setAdminBusy(false);
+    }
+}
+
+async function lookupAdminPrice(form){
+    if(state.adminBusy)return;
+    const input=form.querySelector("input");
+    let userId;
+    try{userId=validAdminId(input)}
+    catch(error){showToast(error.message);input.focus();return}
+    setAdminBusy(true);
+    try{
+        const payload=await runAdminAction("price_lookup",userId);
+        const result=adminNode("#adminPriceResult");
+        const amount=adminNode("#adminPriceAmount");
+        const profile=adminNode("#adminPriceProfile");
+        if(amount)amount.textContent=payload.display||`$${payload.amount}M`;
+        if(profile)profile.href=`https://www.torn.com/profiles.php?XID=${userId}`;
+        if(result)result.hidden=false;
+        showToast(`Payment price loaded for Torn ID ${userId}`);
+    }catch(error){
+        handleAdminError(error,"Could not check the payment price");
+    }finally{
+        if(adminNode("#adminOverlay"))setAdminBusy(false);
+    }
+}
+
+function handleAdminClick(event){
+    if(event.target.closest("#adminLaunchButton")){openAdminPanel();return}
+    if(event.target.closest("#adminCloseButton,#adminBackdrop")){
+        closeAdminPanel();
+        return;
+    }
+    if(event.target.closest("#adminRefreshButton")){
+        refreshAdminState(true);
+        return;
+    }
+    const actionButton=event.target.closest("[data-admin-action]");
+    if(!actionButton)return;
+    const userId=Number(actionButton.dataset.userId);
+    if(Number.isSafeInteger(userId)){
+        removeAdminId(actionButton.dataset.adminAction,userId);
+    }
+}
+
+function handleAdminSubmit(event){
+    if(!event.target.matches("#adminWhitelistForm,#adminTrialForm,#adminPriceForm"))return;
+    event.preventDefault();
+    if(event.target.id==="adminWhitelistForm"){
+        submitAdminList(event.target,"whitelist");
+    }else if(event.target.id==="adminTrialForm"){
+        submitAdminList(event.target,"trial");
+    }else lookupAdminPrice(event.target);
+}
+
+function resetMarketState(){
+    clearTimeout(state.pollTimer);
+    clearTimeout(state.portfolioTimer);
+    state.portfolioTimer=null;
+    state.portfolioController?.abort();
+    state.portfolioController=null;
+    state.data=null;
+    state.hash=null;
+    state.history=new Map();
+    state.historyVersion=null;
+    state.cacheVersion=null;
+    state.predictionVersion=null;
+    state.currentPrices=new Map();
+    state.portfolio=new Map();
+    state.portfolioStatus="idle";
+    state.portfolioFetchedAt=0;
+    state.portfolioChecking=false;
+    state.portfolioNextRefreshAt=0;
+    state.portfolioRetryUntil=0;
+    state.portfolioError="";
+    state.expandedStockId=null;
+    state.stockRowNodes=new Map();
+    state.holdingDetailNodes=new Map();
+    state.checking=false;
+    state.lastCheck=null;
+    elements.rows.replaceChildren();
+    updatePortfolioRefreshStatus();
+}
+
+function resetPendingOffer(){
+    elements.accessChecks.forEach(input=>input.checked=false);
+    elements.ackProgress.textContent="0 / 3 instructions acknowledged";
+    elements.ackMeter.style.setProperty("--ack-progress","0%");
+    elements.revealOffer.disabled=true;
+    elements.revealOffer.textContent="Read and acknowledge all instructions";
+    elements.offerAmount.textContent="—";
+    elements.offerPanel.hidden=true;
+}
+
+function updateAcknowledgements(){
+    const acknowledged=elements.accessChecks.filter(input=>input.checked).length;
+    elements.ackProgress.textContent=`${acknowledged} / 3 instructions acknowledged`;
+    elements.ackMeter.style.setProperty(
+        "--ack-progress",`${acknowledged/3*100}%`
+    );
+    elements.revealOffer.disabled=acknowledged!==3;
+    elements.revealOffer.textContent=acknowledged===3
+        ?"Reveal my private amount"
+        :"Read and acknowledge all instructions";
+}
+
+function profileTrial(profile){
+    if(!profile||typeof profile!=="object")return null;
+    const trial=profile.trial;
+    if(!trial||typeof trial!=="object")return null;
+    const endTimestamp=Number(trial.end_timestamp);
+    const endAt=epochMilliseconds(endTimestamp);
+    const remainingSeconds=Number(trial.remaining_seconds);
+    if(!endAt)return null;
+    return {
+        userId:Number(trial.user_id??profile.user?.id),
+        endTimestamp,
+        endAt,
+        remainingSeconds,
+        expired:profile.trial_expired===true
+            ||profile.access_kind==="trial_expired"
+            ||trial.expired===true
+            ||String(trial.status||"").toLowerCase()==="expired"
+            ||(Number.isFinite(remainingSeconds)
+                ?remainingSeconds<=0
+                :endAt<=serverNow())
+    };
+}
+
+function profileTrialExpired(profile){
+    return profile?.trial_expired===true
+        ||profile?.access_kind==="trial_expired"
+        ||profileTrial(profile)?.expired===true;
+}
+
+function clearTrialAccessDisplay(){
+    clearInterval(state.trialTimer);
+    state.trialTimer=null;
+    state.trialEndAt=0;
+    elements.trialAccessPill.hidden=true;
+    elements.trialAccessPill.classList.remove("expired");
+    elements.trialAccessPill.removeAttribute("title");
+    elements.trialAccessPill.removeAttribute("aria-label");
+    elements.trialAccessCountdown.textContent="--:--:--";
+}
+
+function updateTrialAccessCountdown(){
+    if(!state.trialEndAt)return;
+    const remaining=state.trialEndAt-Date.now();
+    if(remaining>0){
+        elements.trialAccessCountdown.textContent=durationCountdown(remaining);
+        elements.trialAccessPill.setAttribute(
+            "aria-label",`7-day trial, ${durationCountdown(remaining)} remaining`
+        );
+        return;
+    }
+    clearInterval(state.trialTimer);
+    state.trialTimer=null;
+    elements.trialAccessCountdown.textContent="EXPIRED";
+    elements.trialAccessPill.classList.add("expired");
+    elements.trialAccessPill.setAttribute("aria-label","7-day trial expired");
+    if(state.authorized&&!state.trialExpiryChecking)transitionExpiredTrial();
+}
+
+function configureTrialAccess(profile){
+    clearTrialAccessDisplay();
+    syncServerClock(profile);
+    const trial=profileTrial(profile);
+    if(profile?.access_kind!=="trial"||!trial||trial.expired)return false;
+    const remainingMilliseconds=Number.isFinite(trial.remainingSeconds)
+        ?trial.remainingSeconds*1000
+        :trial.endAt-serverNow();
+    state.trialEndAt=Date.now()+Math.max(0,remainingMilliseconds);
+    elements.trialAccessPill.hidden=false;
+    elements.trialAccessPill.title=utcEndLabel(trial.endTimestamp);
+    elements.accessType.textContent="7-day trial access";
+    updateTrialAccessCountdown();
+    state.trialTimer=setInterval(updateTrialAccessCountdown,1000);
+    return true;
+}
+
+function setPendingAccessMode(profile){
+    const expired=profileTrialExpired(profile);
+    if(expired){
+        elements.pendingAccessType.textContent="7-day trial expired";
+        elements.accessStatus.textContent="Trial expired";
+        elements.accessEyebrow.textContent="7-day trial complete / access paused";
+        elements.accessTitle.innerHTML="Trial complete. <span>Continue permanently.</span>";
+        elements.accessStoryCopy.textContent="Your seven-day TornX trial has ended, so the prediction surface is now locked. Contact the person who shared this link for permanent lifetime access.";
+        elements.lifetimeAccessTerm.textContent="Trial ended / lifetime available";
+        return;
+    }
+    elements.pendingAccessType.textContent=profile.access?.type||"Identity verified";
+    elements.accessStatus.textContent="Waiting for activation";
+    elements.accessEyebrow.textContent="API key accepted / activation pending";
+    elements.accessTitle.innerHTML="Key accepted. <span>Access comes next.</span>";
+    elements.accessStoryCopy.textContent="Your Torn API key passed validation, but this account is not on the private TornX access list yet. Contact the person who shared this link with you for information about purchasing permanent access to the stock market predictor.";
+    elements.lifetimeAccessTerm.textContent="Permanent / lifetime";
+}
+
+async function transitionExpiredTrial(profile=null){
+    if(state.trialExpiryChecking)return;
+    state.trialExpiryChecking=true;
+    const previous=state.authProfile||{};
+    const expiredProfile={
+        ...previous,
+        ...(profile&&typeof profile==="object"?profile:{}),
+        authenticated:true,
+        authorized:false,
+        access_granted:false,
+        verified:false,
+        pending_access:true,
+        trial_expired:true,
+        access_kind:"trial_expired",
+        trial:profile?.trial||previous.trial
+    };
+    showPendingAccess(expiredProfile);
+    showToast("Your 7-day TornX trial has expired");
+    try{
+        const refreshed=await authFetch("./api/auth/session");
+        if(!refreshed.authenticated){
+            lockDashboard("Your session expired. Sign in again");
+            return;
+        }
+        routeProfile(refreshed);
+    }catch(error){
+        if(handleSessionInvalidated(error))return;
+        if(error.code==="access_blocked"){
+            forgetCredential();
+            lockDashboard("This account is not permitted to access TornX");
+        }else if(error.status===401){
+            lockDashboard("Your session expired. Sign in again");
+        }else{
+            elements.accessStatus.textContent="Trial expired / rechecking access";
+            scheduleAccessPoll();
+        }
+    }finally{
+        state.trialExpiryChecking=false;
+    }
+}
+
+function handleTrialExpired(error){
+    if(error?.code!=="trial_expired")return false;
+    transitionExpiredTrial(error.payload);
+    return true;
+}
+
+function lockDashboard(message=""){
+    clearTimeout(state.accessPollTimer);
+    clearTrialAccessDisplay();
+    unmountAdminPanel();
+    state.authenticated=false;
+    state.authorized=false;
+    state.authProfile=null;
+    state.checkingAccess=false;
+    state.trialExpiryChecking=false;
+    resetMarketState();
+    elements.dashboard.hidden=true;
+    elements.accessGate.hidden=true;
+    elements.accountPill.hidden=true;
+    elements.authGate.hidden=false;
+    elements.authError.textContent=message;
+}
+
+function unlockDashboard(profile){
+    clearTimeout(state.accessPollTimer);
+    state.authenticated=true;
+    state.authorized=true;
+    state.authProfile=profile;
+    elements.accessType.textContent=profile.access?.type||"Verified access";
+    elements.userIdentity.textContent=profile.user?.id
+        ?`TORN ID ${profile.user.id}`
+        :"VERIFIED TORN USER";
+    elements.accountPill.hidden=false;
+    configureTrialAccess(profile);
+    elements.authError.textContent="";
+    elements.authGate.hidden=true;
+    elements.accessGate.hidden=true;
+    elements.dashboard.hidden=false;
+    if(profile.is_admin)loadAdminPanel();
+    else unmountAdminPanel();
+    renderRows();
+    checkForUpdate(false);
+    updatePortfolioRefreshStatus();
+    if(portfolioCanRequest())loadPortfolio(false);
+}
+
+function showPendingAccess(profile){
+    profile=profile&&typeof profile==="object"
+        ?profile
+        :(state.authProfile||{});
+    const entering=elements.accessGate.hidden;
+    clearTimeout(state.accessPollTimer);
+    clearTrialAccessDisplay();
+    state.authenticated=true;
+    state.authorized=false;
+    state.authProfile=profile;
+    unmountAdminPanel();
+    resetMarketState();
+    elements.authGate.hidden=true;
+    elements.dashboard.hidden=true;
+    elements.accountPill.hidden=true;
+    elements.accessGate.hidden=false;
+    elements.pendingUserIdentity.textContent=profile.user?.id
+        ?`TORN ID ${profile.user.id}`
+        :"VERIFIED TORN USER";
+    setPendingAccessMode(profile);
+    if(entering)resetPendingOffer();
+    scheduleAccessPoll();
+}
+
+function routeProfile(profile){
+    syncServerClock(profile);
+    if((profile?.access_granted||profile?.verified)&&!profileTrialExpired(profile)){
+        unlockDashboard(profile);
+        return;
+    }
+    if(profile?.pending_access){
+        showPendingAccess(profile);
+        return;
+    }
+    lockDashboard("Sign in to continue");
+}
+
+function scheduleAccessPoll(){
+    clearTimeout(state.accessPollTimer);
+    if(!state.authenticated||state.authorized)return;
+    state.accessPollTimer=setTimeout(
+        ()=>refreshAccess(false),document.hidden?12000:5000
+    );
+}
+
+async function refreshAccess(manual=false){
+    if(state.checkingAccess||!state.authenticated||state.authorized)return;
+    state.checkingAccess=true;
+    if(manual)elements.accessStatus.textContent="Checking activation…";
+    try{
+        const profile=await authFetch("./api/auth/session");
+        if(!profile.authenticated){
+            lockDashboard("Your session expired. Sign in again");
+            return;
+        }
+        if((profile.access_granted||profile.verified)&&!profileTrialExpired(profile)){
+            elements.accessStatus.textContent="Access activated";
+            routeProfile(profile);
+            showToast(profile.access_kind==="trial"
+                ?"Your 7-day TornX trial is active"
+                :"Permanent TornX access activated");
+            return;
+        }
+        state.authProfile=profile;
+        setPendingAccessMode(profile);
+        if(manual&&!profileTrialExpired(profile)){
+            elements.accessStatus.textContent="Not activated yet";
+        }
+    }catch(error){
+        if(handleSessionInvalidated(error))return;
+        if(handleTrialExpired(error))return;
+        if(error.code==="access_blocked"){
+            forgetCredential();
+            lockDashboard("This account is not permitted to access TornX");
+            return;
+        }
+        elements.accessStatus.textContent="Could not check activation";
+        if(manual)showToast(error.message);
+    }finally{
+        state.checkingAccess=false;
+        scheduleAccessPoll();
+    }
+}
+
+async function revealAccessOffer(){
+    if(elements.accessChecks.some(input=>!input.checked))return;
+    elements.revealOffer.disabled=true;
+    elements.revealOffer.textContent="Retrieving private amount…";
+    try{
+        const offer=await authFetch("./api/access/offer",{
+            method:"POST",body:"{}"
+        });
+        const amount=Number(offer.amount);
+        if(!Number.isFinite(amount))throw new Error("Invalid access offer");
+        elements.offerAmount.textContent=`$${amount.toFixed(2)}M`;
+        elements.offerPanel.hidden=false;
+        elements.revealOffer.textContent="Private amount revealed";
+    }catch(error){
+        if(handleSessionInvalidated(error))return;
+        if(handleTrialExpired(error))return;
+        if(error.code==="access_already_granted"){
+            await refreshAccess(true);
+            return;
+        }
+        if(error.status===401||error.code==="access_blocked"){
+            if(error.code==="access_blocked")forgetCredential();
+            lockDashboard(error.message);
+            return;
+        }
+        elements.revealOffer.disabled=false;
+        elements.revealOffer.textContent="Try revealing again";
+        showToast(error.message);
+    }
+}
+
+function clearAuthRetry(){
+    clearTimeout(state.authRetryTimer);
+    state.authRetryTimer=null;
+    state.authRetryUntil=0;
+    state.authRetryMessage="";
+    state.authRetryUseSaved=false;
+    state.authRetrySilent=false;
+}
+
+function isTransientLoginError(error){
+    return Boolean(
+        error?.name==="AbortError"
+        ||error?.code==="network_error"
+        ||error?.status===429
+        ||error?.code==="torn_rate_limited"
+        ||(
+            error?.status>=500
+            &&["torn_unavailable","invalid_torn_response"].includes(error?.code)
+        )
+    );
+}
+
+function authRetrySeconds(){
+    return Math.max(0,Math.ceil((state.authRetryUntil-Date.now())/1000));
+}
+
+function updateAuthRetryCountdown(){
+    if(state.authRetryUntil<=Date.now())return;
+    const seconds=authRetrySeconds();
+    elements.authError.textContent=`${state.authRetryMessage} Retrying in ${seconds} second${seconds===1?"":"s"}`;
+    elements.loginButton.disabled=true;
+    elements.loginButton.querySelector(".auth-submit-label").textContent=
+        `Retry in ${seconds}s`;
+}
+
+function scheduleAuthRetry(){
+    clearTimeout(state.authRetryTimer);
+    state.authRetryTimer=setTimeout(
+        retryLoginValidation,
+        Math.max(0,state.authRetryUntil-Date.now())
+    );
+    updateAuthRetryCountdown();
+}
+
+function beginAuthRetry(error,useSaved=false,silent=false){
+    const retryAfter=Number(error?.retryAfter);
+    const seconds=Number.isFinite(retryAfter)&&retryAfter>0
+        ?Math.ceil(retryAfter)
+        :60;
+    state.authRetryUntil=Date.now()+seconds*1000;
+    state.authRetryMessage=error?.message||"Torn could not validate the key";
+    state.authRetryUseSaved=Boolean(useSaved);
+    state.authRetrySilent=Boolean(silent);
+    state.authenticating=false;
+    scheduleAuthRetry();
+}
+
+function handleSessionInvalidated(error){
+    if(error?.code!=="session_invalidated")return false;
+    clearAuthRetry();
+    forgetCredential();
+    elements.loginForm.reset();
+    elements.apiKey.type="password";
+    elements.keyToggle.textContent="Show";
+    lockDashboard("Your session was replaced by a newer login. Saved sign-in was cleared so the newer session stays active");
+    setAuthBusy(false);
+    return true;
+}
+
+function setAuthBusy(busy,label="Verify key & enter"){
+    state.authenticating=busy;
+    const retrying=state.authRetryUntil>Date.now();
+    elements.loginButton.disabled=busy||retrying;
+    elements.apiKey.disabled=busy;
+    elements.remember.disabled=busy;
+    elements.loginButton.querySelector(".auth-submit-label").textContent=
+        busy?"Checking with Torn…":label;
+    if(!busy&&retrying)updateAuthRetryCountdown();
+}
+
+async function retryLoginValidation(){
+    state.authRetryTimer=null;
+    if(state.authRetryUntil>Date.now()){
+        scheduleAuthRetry();
+        return;
+    }
+    if(elements.authGate.hidden){
+        clearAuthRetry();
+        setAuthBusy(false);
+        return;
+    }
+    const useSaved=state.authRetryUseSaved;
+    const silent=state.authRetrySilent;
+    clearAuthRetry();
+    let apiKey="";
+    try{
+        apiKey=useSaved
+            ?await restoreCredential()
+            :elements.apiKey.value.trim();
+        if(apiKey.length<8){
+            elements.authError.textContent="Automatic retry stopped because no API key is available";
+            return;
+        }
+        setAuthBusy(true);
+        await loginWithKey(apiKey,useSaved||elements.remember.checked,silent);
+    }catch(error){
+        if(isTransientLoginError(error)){
+            beginAuthRetry(error,useSaved,silent);
+            return;
+        }
+        if(handleSessionInvalidated(error))return;
+        elements.authError.textContent=error.message||"Torn key validation failed";
+        if(error.status===401||error.status===403)forgetCredential();
+    }finally{
+        apiKey="";
+        if(state.authRetryUntil<=Date.now())setAuthBusy(false);
+    }
+}
+
+async function loginWithKey(apiKey,remember,silent=false){
+    if(remember&&!window.crypto?.getRandomValues){
+        throw new Error("Browser vault unavailable");
+    }
+    const profile=await authFetch("./api/auth/login",{
+        method:"POST",
+        body:JSON.stringify({api_key:apiKey,remember})
+    });
+    clearAuthRetry();
+    if(remember){
+        try{
+            await rememberCredential(apiKey)
+        }catch(error){
+            routeProfile(profile)
+            showToast(`Signed in, but ${error.message}`)
+            return(profile)
+        }
+    }else{
+        forgetCredential()
+    }
+    elements.apiKey.value="";
+    elements.remember.checked=remember;
+    routeProfile(profile);
+    if(!silent)showToast(profile.access_granted
+        ?(profile.access_kind==="trial"
+            ?"Authenticated with an active 7-day TornX trial"
+            :`Authenticated with ${profile.access?.type||"Torn API access"}`)
+        :profileTrialExpired(profile)
+            ?"Your 7-day TornX trial has expired"
+            :"Identity verified. Permanent access is awaiting activation…")
+    return(profile)
+}
+
+async function bootstrapAuth(){
+    if(state.authBooting)return;
+    state.authBooting=true;
+    lockDashboard("");
+    try{
+        const session=await authFetch("./api/auth/session");
+        if(!session.authenticated){
+            const error=new Error("Authentication required");
+            error.status=401;
+            throw error;
+        }
+        state.authBooting=false;
+        routeProfile(session);
+        return;
+    }catch(error){
+        if(handleSessionInvalidated(error)){
+            state.authBooting=false;
+            return;
+        }
+        if(handleTrialExpired(error)){
+            state.authBooting=false;
+            return;
+        }
+        if(error.code==="access_blocked"){
+            forgetCredential();
+            lockDashboard("This account is not permitted to access TornX");
+            state.authBooting=false;
+            return;
+        }
+        if(error.status!==401){
+            lockDashboard("The authentication server is unavailable");
+            state.authBooting=false;
+            return;
+        }
+    }
+    let savedKey="";
+    try{
+        savedKey=await restoreCredential();
+        if(savedKey){
+            elements.remember.checked=true;
+            setAuthBusy(true);
+            await loginWithKey(savedKey,true,true);
+            return;
+        }
+    }catch(error){
+        if(isTransientLoginError(error)){
+            beginAuthRetry(error,true,true);
+            return;
+        }
+        if(handleSessionInvalidated(error))return;
+        if(error.status===401||error.status===403)forgetCredential();
+        lockDashboard(error.message||"Saved login could not be restored");
+    }finally{
+        savedKey="";
+        setAuthBusy(false);
+        state.authBooting=false;
+    }
+}
+
+async function submitLogin(event){
+    event.preventDefault();
+    if(state.authenticating||state.authRetryUntil>Date.now())return;
+    let apiKey=elements.apiKey.value.trim();
+    const remember=elements.remember.checked;
+    elements.authError.textContent="";
+    if(apiKey.length<8){
+        elements.authError.textContent="Enter a valid Torn API key";
+        elements.apiKey.focus();
+        return;
+    }
+    setAuthBusy(true);
+    try{
+        await loginWithKey(apiKey,remember);
+    }catch(error){
+        if(isTransientLoginError(error)){
+            beginAuthRetry(error,false,false);
+            return;
+        }
+        if(handleSessionInvalidated(error))return;
+        elements.authError.textContent=error.message;
+        if(error.status===401||error.status===403)forgetCredential();
+    }finally{
+        apiKey="";
+        if(state.authRetryUntil<=Date.now())setAuthBusy(false);
+    }
+}
+
+async function logout(){
+    if(elements.logout.disabled||elements.pendingLogout.disabled)return;
+    elements.logout.disabled=true;
+    elements.pendingLogout.disabled=true;
+    try{
+        await authFetch("./api/auth/logout",{
+            method:"POST",body:"{}"
+        });
+        forgetCredential();
+        elements.loginForm.reset();
+        elements.apiKey.type="password";
+        elements.keyToggle.textContent="Show";
+        lockDashboard("");
+    }catch(error){
+        if(handleSessionInvalidated(error))return;
+        showToast(`Could not log out: ${error.message}`);
+    }finally{
+        elements.logout.disabled=false;
+        elements.pendingLogout.disabled=false;
+    }
+}
+
+function startAuthCanvas(canvas=elements.authCanvas){
+    const context=canvas.getContext("2d");
+    if(!context)return;
+    const reduced=matchMedia("(prefers-reduced-motion:reduce)").matches;
+    let width=0;
+    let height=0;
+    let ratio=1;
+    let nodes=[];
+    const pointer={x:-1000,y:-1000};
+    function resize(){
+        width=innerWidth;
+        height=innerHeight;
+        ratio=Math.min(devicePixelRatio||1,2);
+        canvas.width=Math.round(width*ratio);
+        canvas.height=Math.round(height*ratio);
+        context.setTransform(ratio,0,0,ratio,0,0);
+        const count=Math.max(28,Math.min(68,Math.floor(width*height/26000)));
+        nodes=Array.from({length:count},(_,index)=>({
+            x:Math.random()*width,
+            y:Math.random()*height,
+            vx:(Math.random()-.5)*.18,
+            vy:(Math.random()-.5)*.18,
+            phase:index*.71
+        }));
+    }
+    function draw(now=0){
+        context.clearRect(0,0,width,height);
+        nodes.forEach((node,index)=>{
+            if(!reduced){
+                node.x=(node.x+node.vx+width)%width;
+                node.y=(node.y+node.vy+height)%height;
+                const dx=node.x-pointer.x;
+                const dy=node.y-pointer.y;
+                const distance=Math.hypot(dx,dy);
+                if(distance<150&&distance>0){
+                    node.x+=dx/distance*(150-distance)*.006;
+                    node.y+=dy/distance*(150-distance)*.006;
+                }
+            }
+            for(let other=index+1;other<nodes.length;other++){
+                const target=nodes[other];
+                const distance=Math.hypot(node.x-target.x,node.y-target.y);
+                if(distance>145)continue;
+                context.beginPath();
+                context.moveTo(node.x,node.y);
+                context.lineTo(target.x,target.y);
+                context.strokeStyle=`rgba(136,216,47,${(1-distance/145)*.12})`;
+                context.lineWidth=.7;
+                context.stroke();
+            }
+            const pulse=reduced?1:.75+Math.sin(now*.0015+node.phase)*.25;
+            context.beginPath();
+            context.arc(node.x,node.y,1.15+pulse*.7,0,Math.PI*2);
+            context.fillStyle=index%5===0
+                ?`rgba(85,215,223,${.22+pulse*.15})`
+                :`rgba(136,216,47,${.2+pulse*.16})`;
+            context.fill();
+        });
+        if(!reduced)requestAnimationFrame(draw);
+    }
+    addEventListener("resize",resize,{passive:true});
+    addEventListener("pointermove",event=>{
+        pointer.x=event.clientX;
+        pointer.y=event.clientY;
+    },{passive:true});
+    resize();
+    draw();
+}
+
+function escapeHtml(value){
+    return String(value).replace(/[&<>'"]/g,character=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"})[character]);
+}
+
+function money(value){
+    const number=Number(value);
+    if(!Number.isFinite(number))return "—";
+    return number.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+
+function wholeMoney(value){
+    const number=Number(value);
+    if(!Number.isFinite(number))return "—";
+    return Math.floor(Math.abs(number)+1e-7).toLocaleString("en-US");
+}
+
+function signedWholeMoney(value){
+    const number=Number(value);
+    if(!Number.isFinite(number))return "—";
+    const sign=number>0?"+":number<0?"−":"";
+    return `${sign}$${wholeMoney(number)}`;
+}
+
+function compactShares(value){
+    const shares=Math.max(0,Math.floor(Number(value)||0));
+    if(shares>=1_000_000_000)return `${Math.floor(shares/1_000_000_000)}B`;
+    if(shares>=1_000_000)return `${Math.floor(shares/1_000_000)}M`;
+    if(shares>=1_000)return `${Math.floor(shares/1_000)}K`;
+    return shares.toLocaleString("en-US");
+}
+
+function shortUtcDate(timestamp){
+    const value=Number(timestamp);
+    if(!Number.isFinite(value)||value<=0)return "—";
+    return new Intl.DateTimeFormat("en-GB",{
+        timeZone:"UTC",day:"2-digit",month:"2-digit",year:"2-digit"
+    }).format(new Date(value*1000));
+}
+
+function priceHtml(value){
+    const formatted=money(value);
+    if(formatted==="—")return formatted;
+    const [whole,decimal]=formatted.split(".");
+    return `${whole}<span class="price-decimal">.${decimal}</span>`;
+}
+
+function signedMoney(value){
+    const number=Number(value);
+    if(!Number.isFinite(number))return "—";
+    const sign=number>0?"+":number<0?"−":"";
+    return `${sign}$${money(Math.abs(number))}`;
+}
+
+function signedPercent(value,digits=3){
+    const number=Number(value);
+    if(!Number.isFinite(number))return "—";
+    const sign=number>0?"+":number<0?"−":"";
+    return `${sign}${Math.abs(number).toFixed(digits)}%`;
+}
+
+function utcDate(timestamp,includeSeconds=false){
+    const value=Number(timestamp);
+    if(!Number.isFinite(value)||value<=0)return "—";
+    const options={
+        timeZone:"UTC",year:"numeric",month:"short",day:"2-digit",
+        hour:"2-digit",minute:"2-digit",hour12:false
+    };
+    if(includeSeconds)options.second="2-digit";
+    return new Intl.DateTimeFormat("en-GB",options).format(new Date(value*1000)).replace(",","")+" UTC";
+}
+
+function utcDateParts(timestamp){
+    const value=Number(timestamp);
+    if(!Number.isFinite(value)||value<=0)return{date:"—",time:"—"};
+    const point=new Date(value*1000);
+    const date=new Intl.DateTimeFormat("en-GB",{
+        timeZone:"UTC",year:"numeric",month:"short",day:"2-digit"
+    }).format(point);
+    const time=new Intl.DateTimeFormat("en-GB",{
+        timeZone:"UTC",hour:"2-digit",minute:"2-digit",second:"2-digit",
+        hour12:false
+    }).format(point);
+    return{date,time:`${time} UTC`};
+}
+
+function duration(seconds){
+    const safe=Math.max(0,Math.ceil(seconds));
+    const days=Math.floor(safe/86400);
+    const hours=Math.floor((safe%86400)/3600);
+    const minutes=Math.floor((safe%3600)/60);
+    const rest=safe%60;
+    const core=[hours,minutes,rest].map(value=>String(value).padStart(2,"0")).join(":");
+    return days?`${days}D ${core}`:core;
+}
+
+function toneFor(change){
+    const value=Number(change);
+    return value>0?"up":value<0?"down":"flat";
+}
+
+function actionLabel(action){
+    return action==="SELL_OR_AVOID"?"Sell / avoid":action||"Hold";
+}
+
+function modelDetails(model){
+    const models={
+        previous:{name:"State Reversal",description:"Forecasts the next changed prices returning toward the state before the current move"},
+        persistence:{name:"Price Persistence",description:"Forecasts prices remaining at their current state"},
+        ar2:{name:"Two-State Regression",description:"Forecasts prices from the two most recent changed states"},
+        extrapolation:{name:"Momentum Extrapolation",description:"Forecasts the latest price movement continuing into the next changed state"}
+    };
+    return models[String(model||"").toLowerCase()]||{
+        name:String(model||"Unknown model").replaceAll("_"," "),
+        description:"The active changed-state forecast model"
+    };
+}
+
+function currentPriceFor(item){
+    const live=Number(state.currentPrices.get(item.stock));
+    return Number.isFinite(live)?live:Number(item.current_price);
+}
+
+function sparkPaths(symbol,currentPrice,predictedPrice,predictedChange){
+    const observed=(state.history.get(symbol)||[])
+        .map(Number)
+        .filter(Number.isFinite)
+        .slice(-24);
+    const current=Number(currentPrice);
+    const predicted=Number(predictedPrice);
+    const change=Number(predictedChange);
+    if(!observed.length&&Number.isFinite(current))observed.push(current);
+    if(Number.isFinite(current)&&observed.at(-1)!==current)observed.push(current);
+    if(observed.length===1)observed.unshift(observed[0]);
+    if(!observed.length)observed.push(0,0);
+    const projected=Number.isFinite(current)&&Number.isFinite(change)
+        ?current+change
+        :Number.isFinite(predicted)?predicted:observed.at(-1);
+    const values=[...observed,projected];
+    const minimum=Math.min(...values);
+    const maximum=Math.max(...values);
+    const range=maximum-minimum||Math.max(Math.abs(maximum)*.002,1);
+    const floor=minimum-range*.16;
+    const ceiling=maximum+range*.16;
+    const y=value=>46-(value-floor)/(ceiling-floor)*40;
+    const points=observed.map((value,index)=>[
+        observed.length===1?108:index/(observed.length-1)*108,
+        y(value)
+    ]);
+    const line=points.map((point,index)=>
+        `${index?"L":"M"}${point[0].toFixed(1)},${point[1].toFixed(1)}`
+    ).join(" ");
+    const last=points.at(-1);
+    const predictedPoint=[120,y(projected)];
+    const projection=`M${last[0].toFixed(1)},${last[1].toFixed(1)} C112,${last[1].toFixed(1)} 116,${predictedPoint[1].toFixed(1)} ${predictedPoint[0]},${predictedPoint[1].toFixed(1)}`;
+    const area=`${line} L${predictedPoint[0]},${predictedPoint[1].toFixed(1)} L120,52 L0,52 Z`;
+    return{line,projection,area,predictedPoint,predictionStartPoint:last};
+}
+
+function filteredPredictions(){
+    if(!state.data)return[]
+    const query=state.query.trim().toLowerCase()
+    const values=state.data.predictions.filter(item=>{
+        const metadata=stockNames[item.stock]
+        const name=metadata?.name||item.stock
+        const queryMatch=!query||item.stock.toLowerCase().includes(query)||name.toLowerCase().includes(query)
+        const position=metadata?.id?state.portfolio.get(metadata.id):null
+        const filterMatch=state.filter==="ALL"
+            ||(state.filter==="OWNED"
+                ?Number(position?.shares)>0
+                :state.filter==="ELIGIBLE"
+                    ?item.trade_eligible
+                    :item.action===state.filter
+            )
+        return(queryMatch&&filterMatch)
+    })
+    values.sort((left,right)=>{
+        if(state.sort==="price-asc")return(Number(left.predicted_price)-Number(right.predicted_price))
+        if(state.sort==="move-desc")return(Math.abs(Number(right.predicted_change_percent))-Math.abs(Number(left.predicted_change_percent)))
+        if(state.sort==="acronym")return(left.stock.localeCompare(right.stock))
+        return(Number(right.predicted_price)-Number(left.predicted_price))
+    })
+    return(values)
+}
+
+function holdingMetrics(position,currentPrice){
+    const current=Number(currentPrice);
+    const shares=Math.max(0,Math.floor(Number(position?.shares)||0));
+    const transactions=Array.isArray(position?.transactions)
+        ?position.transactions
+        :[];
+    const profit=transactions.reduce((total,transaction)=>{
+        const transactionShares=Math.max(0,Number(transaction.shares)||0);
+        const bought=Number(transaction.price);
+        return total+(
+            Number.isFinite(current)&&Number.isFinite(bought)
+                ?transactionShares*(current-bought)
+                :0
+        );
+    },0);
+    return{
+        shares,
+        value:Number.isFinite(current)?shares*current:0,
+        profit,
+        transactions
+    };
+}
+
+function holdingBonusLabel(position){
+    const bonus=position?.bonus||{};
+    if(bonus.available)return "Bonus available";
+    const progress=Number(bonus.progress);
+    const increment=Number(bonus.increment);
+    if(Number.isFinite(progress)&&Number.isFinite(increment)&&increment>0){
+        return `${Math.floor(progress).toLocaleString("en-US")} / ${Math.floor(increment).toLocaleString("en-US")} bonus progress`;
+    }
+    return "Bonus inactive";
+}
+
+function setText(node,value){
+    const next=String(value);
+    if(node.textContent!==next)node.textContent=next;
+}
+
+function setAttribute(node,name,value){
+    const next=String(value);
+    if(node.getAttribute(name)!==next)node.setAttribute(name,next);
+}
+
+function setTone(node,tone){
+    node.classList.toggle("up",tone==="up");
+    node.classList.toggle("down",tone==="down");
+}
+
+function reconcileChildren(parent,nodes){
+    const wanted=new Set(nodes);
+    [...parent.children].forEach(child=>{
+        if(!wanted.has(child))child.remove();
+    });
+    let cursor=parent.firstChild;
+    nodes.forEach(node=>{
+        if(node===cursor){
+            cursor=cursor.nextSibling;
+        }else parent.insertBefore(node,cursor);
+    });
+}
+
+function stockRowKey(item){
+    const metadata=stockNames[item.stock];
+    return metadata?.id?`id:${metadata.id}`:`symbol:${item.stock}`;
+}
+
+function createStockRow(item,index){
+    const symbol=item.stock;
+    const metadata=stockNames[symbol];
+    const name=metadata?.name||symbol;
+    const row=document.createElement("tr");
+    row.className="stock-row entering";
+    row.dataset.rowKey=stockRowKey(item);
+    if(metadata?.id)row.dataset.stockId=String(metadata.id);
+    row.dataset.stockSymbol=symbol;
+    row.tabIndex=0;
+    row.setAttribute("role","button");
+    row.style.setProperty("--delay",`${Math.min(index,18)*24}ms`);
+    row.innerHTML=`
+        <td><div class="stock-cell">
+            <div class="logo-frame"><img class="stock-logo" src="${logoBase}/${encodeURIComponent(symbol)}.svg" alt="" loading="lazy" decoding="async"><span class="logo-fallback">${escapeHtml(symbol)}</span></div>
+            <div class="stock-meta"><div class="stock-name">${escapeHtml(name)}</div><div class="stock-subline"><span class="stock-abbr">${escapeHtml(symbol)}</span><span class="stock-position-badge" hidden></span></div></div>
+        </div></td>
+        <td class="price-cell">
+            <svg class="spark" viewBox="0 0 120 52" preserveAspectRatio="none" aria-hidden="true"><path class="area"></path><path class="line"></path><path class="projection"></path><circle r="2.2"></circle></svg>
+            <div class="price-stack"><div class="predicted-price"></div><div class="current-price">Current <strong></strong></div></div>
+        </td>
+        <td class="holding-cell"><strong class="holding-value" hidden></strong><span class="holding-profit" hidden></span><span class="holding-empty"></span></td>
+        <td><div class="forecast-block"><div class="forecast-change"></div><span class="forecast-percent"></span><span class="forecast-caption">at predicted window</span></div></td>
+        <td><span class="action-chip"></span><span class="eligibility"></span></td>
+        <td class="confidence-cell"><span class="confidence-value"></span><div class="confidence-track"><div class="confidence-fill"></div></div><span class="strength-label">Relative move</span></td>`;
+    const image=row.querySelector(".stock-logo");
+    image.addEventListener("error",()=>{
+        image.style.display="none";
+        row.querySelector(".logo-fallback").style.display="grid";
+    },{once:true});
+    row.addEventListener("animationend",event=>{
+        if(event.animationName==="rowIn")row.classList.remove("entering");
+    });
+    setTimeout(()=>row.classList.remove("entering"),700);
+    return row;
+}
+
+function flashStockRow(row,nextPrice){
+    const previous=Number(row.dataset.renderedPredictedPrice);
+    row.dataset.renderedPredictedPrice=String(nextPrice);
+    if(!Number.isFinite(previous)||previous===nextPrice)return;
+    row.classList.remove("flash-up","flash-down");
+    void row.offsetWidth;
+    row.classList.add(nextPrice>previous?"flash-up":"flash-down");
+    clearTimeout(row._flashTimer);
+    row._flashTimer=setTimeout(
+        ()=>row.classList.remove("flash-up","flash-down"),900
+    );
+}
+
+function patchStockRow(row,item,index,holding,owned,expanded){
+    const symbol=item.stock;
+    const metadata=stockNames[symbol];
+    const name=metadata?.name||symbol;
+    const tone=toneFor(item.predicted_change);
+    const arrow=tone==="up"?"▲":tone==="down"?"▼":"—";
+    const strength=Math.max(0,Number(item.strength)||0);
+    const strengthBar=Math.min(100,strength);
+    const holdingTone=holding?toneFor(holding.profit):"flat";
+    row.classList.toggle("even",Boolean(index%2));
+    row.classList.toggle("owned",owned);
+    setTone(row,tone);
+    setAttribute(row,"aria-expanded",expanded);
+    setAttribute(row,"aria-label",owned
+        ?`${name}, ${holding.shares.toLocaleString("en-US")} shares owned. ${expanded?"Collapse":"Expand"} transactions`
+        :`${name}. No shares currently owned`
+    );
+    const badge=row.querySelector(".stock-position-badge");
+    badge.hidden=!owned;
+    if(owned){
+        setText(badge,compactShares(holding.shares));
+        badge.title=`${holding.shares.toLocaleString("en-US")} shares owned`;
+    }else badge.removeAttribute("title");
+    const current=currentPriceFor(item);
+    const spark=sparkPaths(
+        symbol,current,item.predicted_price,item.predicted_change
+    );
+    setAttribute(row.querySelector(".spark .area"),"d",spark.area);
+    setAttribute(row.querySelector(".spark .line"),"d",spark.line);
+    setAttribute(row.querySelector(".spark .projection"),"d",spark.projection);
+    const circle=row.querySelector(".spark circle");
+    setAttribute(circle,"cx",spark.predictionStartPoint[0].toFixed(1));
+    setAttribute(circle,"cy",spark.predictionStartPoint[1].toFixed(1));
+    const predicted=row.querySelector(".predicted-price");
+    const predictedHtml=priceHtml(item.predicted_price);
+    if(predicted.innerHTML!==predictedHtml)predicted.innerHTML=predictedHtml;
+    setText(row.querySelector(".current-price strong"),money(current));
+    const value=row.querySelector(".holding-value");
+    const profit=row.querySelector(".holding-profit");
+    const empty=row.querySelector(".holding-empty");
+    value.hidden=!owned;
+    profit.hidden=!owned;
+    empty.hidden=owned;
+    if(owned){
+        setText(value,`$${wholeMoney(holding.value)}`);
+        setText(profit,`${signedWholeMoney(holding.profit)} gross profit`);
+        setTone(profit,holdingTone);
+    }else{
+        setText(empty,state.portfolioStatus==="loading"
+            ?"Loading position"
+            :"Not owned"
+        );
+    }
+    setText(row.querySelector(".forecast-change"),`${signedMoney(item.predicted_change)} ${arrow}`);
+    setText(row.querySelector(".forecast-percent"),signedPercent(item.predicted_change_percent));
+    setText(row.querySelector(".action-chip"),actionLabel(item.action));
+    const eligibility=row.querySelector(".eligibility");
+    eligibility.classList.toggle("ready",Boolean(item.trade_eligible));
+    setText(eligibility,item.trade_eligible?"Fee-cleared":"Below fee edge");
+    setText(row.querySelector(".confidence-value"),strength.toFixed(1));
+    const fill=row.querySelector(".confidence-fill");
+    const nextWidth=`${strengthBar}%`;
+    if(fill.style.getPropertyValue("--confidence")!==nextWidth){
+        fill.style.setProperty("--confidence",nextWidth);
+    }
+    flashStockRow(row,Number(item.predicted_price));
+}
+
+function createTransactionRow(transaction,stockId){
+    const row=document.createElement("tr");
+    row.dataset.transactionId=String(transaction.id);
+    const tradeUrl=escapeHtml(`https://www.torn.com/page.php?sid=stocks&stockID=${stockId}&tab=owned`);
+    row.innerHTML=`<td data-field="date"></td><td data-field="shares"></td><td data-field="value"></td><td data-field="bought"></td><td data-field="current"></td><td data-field="change"></td><td data-field="profit"></td><td data-field="fee"><span class="holding-fee-amount"></span><span class="holding-fee-state"></span></td><td class="holding-trade-cell"><a class="holding-trade-link" href="${tradeUrl}" target="_blank" rel="noopener noreferrer" hidden></a><span class="holding-trade-neutral">No trade</span></td>`;
+    return row;
+}
+
+function patchTransactionRow(row,transaction,current,action){
+    const shares=Math.max(0,Math.floor(Number(transaction.shares)||0));
+    const bought=Number(transaction.price);
+    const change=current-bought;
+    const percent=bought?change/bought*100:0;
+    const value=shares*current;
+    const profit=shares*change;
+    const fee=value*.001;
+    const net=profit-fee;
+    const feeCleared=profit>fee;
+    setText(row.querySelector('[data-field="date"]'),shortUtcDate(transaction.timestamp));
+    setText(row.querySelector('[data-field="shares"]'),shares.toLocaleString("en-US"));
+    setText(row.querySelector('[data-field="value"]'),wholeMoney(value));
+    setText(row.querySelector('[data-field="bought"]'),money(bought));
+    setText(row.querySelector('[data-field="current"]'),money(current));
+    const changeNode=row.querySelector('[data-field="change"]');
+    setText(changeNode,`${signedMoney(change)} (${signedPercent(percent,2)})`);
+    setTone(changeNode,toneFor(change));
+    const profitNode=row.querySelector('[data-field="profit"]');
+    setText(profitNode,signedWholeMoney(profit));
+    setTone(profitNode,toneFor(profit));
+    const feeNode=row.querySelector('[data-field="fee"]');
+    const feeState=feeNode.querySelector(".holding-fee-state");
+    setText(feeNode.querySelector(".holding-fee-amount"),`$${money(fee)}`);
+    setText(feeState,`${feeCleared?"Cleared":"Not cleared"} · net ${signedMoney(net)}`);
+    setTone(feeState,feeCleared?"up":"down");
+    feeNode.title=`0.1% selling fee. Gross profit ${signedMoney(profit)}; net after fee ${signedMoney(net)}`;
+    const link=row.querySelector(".holding-trade-link");
+    const neutral=row.querySelector(".holding-trade-neutral");
+    const tradeAction=action==="BUY"?"Buy":action==="SELL_OR_AVOID"?"Sell":"";
+    link.hidden=!tradeAction;
+    neutral.hidden=Boolean(tradeAction);
+    if(tradeAction){
+        setText(link,tradeAction);
+        link.classList.toggle("sell",tradeAction==="Sell");
+        link.setAttribute("aria-label",`${tradeAction} this stock on Torn`);
+    }else{
+        link.classList.remove("sell");
+        link.removeAttribute("aria-label");
+        setText(neutral,action==="HOLD"?"Hold / no trade":"No trade");
+    }
+}
+
+function createHoldingDetailRow(position){
+    const detail=document.createElement("tr");
+    detail.className="holding-detail-row entering";
+    detail.dataset.stockId=String(position.id);
+    detail.id=`holding-detail-${position.id}`;
+    detail._transactionRows=new Map();
+    detail.innerHTML=`<td colspan="6"><div class="holding-drawer">
+        <div class="holding-summary">
+            <div class="holding-summary-main"><span class="holding-summary-mark"></span><div><span data-field="bonus"></span><strong data-field="name"></strong></div></div>
+            <div class="holding-summary-stat"><span>Total shares</span><strong data-field="shares"></strong></div>
+            <div class="holding-summary-stat"><span>Current value</span><strong data-field="value"></strong></div>
+            <div class="holding-summary-stat"><span>Gross profit</span><strong data-field="profit"></strong></div>
+        </div>
+        <div class="holding-transactions-wrap"><table class="holding-transactions">
+            <thead><tr><th>Buy date</th><th>Shares</th><th>Value</th><th>Bought</th><th>Current</th><th>Change</th><th>Profit</th><th>Sell fee (0.1%)</th><th>Action</th></tr></thead>
+            <tbody></tbody>
+        </table></div>
+        <div class="holding-no-transactions" hidden>No purchase transactions were returned for this position.</div>
+    </div></td>`;
+    detail.addEventListener("animationend",event=>{
+        if(event.animationName==="holdingOpen")detail.classList.remove("entering");
+    });
+    setTimeout(()=>detail.classList.remove("entering"),500);
+    return detail;
+}
+
+function patchHoldingDetailRow(detail,item,position,name,symbol){
+    const current=currentPriceFor(item);
+    const metrics=holdingMetrics(position,current);
+    setText(detail.querySelector(".holding-summary-mark"),symbol);
+    setText(detail.querySelector('[data-field="bonus"]'),holdingBonusLabel(position));
+    setText(detail.querySelector('[data-field="name"]'),name);
+    setText(detail.querySelector('[data-field="shares"]'),metrics.shares.toLocaleString("en-US"));
+    setText(detail.querySelector('[data-field="value"]'),`$${wholeMoney(metrics.value)}`);
+    const profit=detail.querySelector('[data-field="profit"]');
+    setText(profit,signedWholeMoney(metrics.profit));
+    setTone(profit,toneFor(metrics.profit));
+    const transactions=[...metrics.transactions].sort(
+        (left,right)=>Number(right.timestamp)-Number(left.timestamp)
+    );
+    const transactionNodes=transactions.map(transaction=>{
+        const key=String(transaction.id);
+        let row=detail._transactionRows.get(key);
+        if(!row){
+            row=createTransactionRow(transaction,position.id);
+            detail._transactionRows.set(key,row);
+        }
+        patchTransactionRow(row,transaction,current,item.action);
+        return row;
+    });
+    const activeIds=new Set(transactions.map(transaction=>String(transaction.id)));
+    detail._transactionRows.forEach((row,key)=>{
+        if(!activeIds.has(key)){
+            row.remove();
+            detail._transactionRows.delete(key);
+        }
+    });
+    const body=detail.querySelector(".holding-transactions tbody");
+    reconcileChildren(body,transactionNodes);
+    detail.querySelector(".holding-transactions-wrap").hidden=!transactions.length;
+    detail.querySelector(".holding-no-transactions").hidden=Boolean(transactions.length);
+}
+
+function cleanupStockNodeCaches(){
+    const valid=new Set((state.data?.predictions||[]).map(stockRowKey));
+    state.stockRowNodes.forEach((row,key)=>{
+        if(!valid.has(key)){
+            row.remove();
+            clearTimeout(row._flashTimer);
+            state.stockRowNodes.delete(key);
+        }
+    });
+    const validIds=new Set(
+        (state.data?.predictions||[])
+            .map(item=>stockNames[item.stock]?.id)
+            .filter(Boolean)
+    );
+    state.holdingDetailNodes.forEach((detail,id)=>{
+        if(!validIds.has(id)){
+            detail.remove();
+            state.holdingDetailNodes.delete(id);
+        }
+    });
+}
+
+function renderRows(){
+    const predictions=filteredPredictions();
+    elements.empty.classList.toggle("visible",!predictions.length);
+    document.querySelector(".stock-table").hidden=!predictions.length;
+    if(!state.data){
+        elements.emptyTitle.textContent="Waiting for prediction data";
+        elements.emptyMessage.textContent="Waiting for the latest prediction snapshot. The dashboard checks for updates automatically every three seconds";
+    }else if(!predictions.length){
+        elements.emptyTitle.textContent=state.filter==="OWNED"
+            ?"No owned holdings"
+            :"No matching stocks";
+        elements.emptyMessage.textContent=state.filter==="OWNED"
+            ?state.portfolioStatus==="loading"
+                ?"Your Torn stock holdings are still loading"
+                :"No currently owned stocks match your search"
+            :"Change the search or filter to bring securities back into view";
+    }
+    elements.resultCount.textContent=`${predictions.length} of ${state.data?.predictions?.length||35} securities`;
+    cleanupStockNodeCaches();
+    const desired=[];
+    predictions.forEach((item,index)=>{
+        const symbol=item.stock;
+        const metadata=stockNames[symbol];
+        const name=metadata?.name||symbol;
+        const key=stockRowKey(item);
+        let row=state.stockRowNodes.get(key);
+        if(!row){
+            row=createStockRow(item,index);
+            state.stockRowNodes.set(key,row);
+        }
+        const position=metadata?.id?state.portfolio.get(metadata.id):null;
+        const holding=position?holdingMetrics(position,currentPriceFor(item)):null;
+        const owned=Boolean(position&&holding.shares>0);
+        const expanded=owned&&state.expandedStockId===metadata?.id;
+        patchStockRow(row,item,index,holding,owned,expanded);
+        desired.push(row);
+        if(expanded){
+            let detail=state.holdingDetailNodes.get(metadata.id);
+            if(!detail){
+                detail=createHoldingDetailRow(position);
+                state.holdingDetailNodes.set(metadata.id,detail);
+            }
+            patchHoldingDetailRow(detail,item,position,name,symbol);
+            row.setAttribute("aria-controls",detail.id);
+            desired.push(detail);
+        }else row.removeAttribute("aria-controls");
+    });
+    reconcileChildren(elements.rows,desired);
+}
+
+function renderSummary(){
+    if(!state.data)return;
+    const data=state.data;
+    const eligible=data.predictions.filter(item=>item.trade_eligible).length;
+    const accuracy=Number(
+        data.accuracy?.selective_price_accuracy_percent
+        ??data.accuracy?.accuracy_percent
+    );
+    const broadAccuracy=Number(data.accuracy?.accuracy_percent);
+    const model=modelDetails(data.model_name);
+    elements.predictionWindow.textContent=utcDate(data.predicted_change_timestamp);
+    elements.model.textContent=model.name;
+    elements.model.title=model.description;
+    elements.modelTooltip.textContent=model.description;
+    elements.accuracy.textContent=Number.isFinite(accuracy)?`${accuracy.toFixed(2)}%`:"—";
+    elements.accuracy.title=Number.isFinite(broadAccuracy)
+        ?`Selective held-out exact-price accuracy. Forced all-stock exact-price accuracy: ${broadAccuracy.toFixed(2)}%`
+        :"Selective held-out exact-price accuracy";
+    elements.eligible.textContent=`${eligible} / ${data.predictions.length}`;
+    elements.selective.textContent=String(data.selective_decision||"—").replaceAll("_"," ");
+    elements.selective.className=`stat-value ${data.selective_decision==="PREDICT"?"good":"warn"}`;
+    elements.hash.textContent=data.hash?`${data.hash.slice(0,12)}…${data.hash.slice(-10)}`:"missing";
+    document.querySelector("#modePill").textContent=`${data.target_kind?.replaceAll("_"," ")||"Prediction engine"}`;
+}
+
+function renderAll(){
+    renderSummary();
+    renderRows();
+    updateCountdown();
+}
+
+function setConnection(mode,text){
+    elements.syncPill.className=`sync-pill ${mode}`;
+    elements.syncText.textContent=text;
+}
+
+function showToast(message){
+    elements.toast.textContent=message;
+    elements.toast.classList.add("show");
+    clearTimeout(state.toastTimer);
+    state.toastTimer=setTimeout(()=>elements.toast.classList.remove("show"),3200);
+}
+
+function acceptPayload(payload,source="live file"){
+    if(!payload||!Array.isArray(payload.predictions)||!payload.predictions.length)throw new Error("Prediction payload has no stocks");
+    const nextHash=String(payload.hash||"");
+    if(nextHash&&nextHash===state.hash){
+        state.lastCheck=new Date();
+        setConnection("live","Hash unchanged");
+        return false;
+    }
+    const hadData=Boolean(state.data);
+    state.data=payload;
+    state.hash=nextHash||JSON.stringify(payload);
+    state.lastCheck=new Date();
+    renderAll();
+    setConnection("live",nextHash?"New hash synced":"Snapshot loaded");
+    if(hadData)showToast(`New prediction snapshot loaded from ${source}`);
+    return true;
+}
+
+function acceptCurrentPrices(prices){
+    if(!prices||typeof prices!=="object")return false;
+    const next=new Map();
+    Object.entries(prices).forEach(([symbol,price])=>{
+        const value=Number(price?.price??price);
+        if(Number.isFinite(value))next.set(symbol,value);
+    });
+    if(!next.size)return false;
+    const changed=next.size!==state.currentPrices.size
+        ||[...next].some(([symbol,price])=>
+            state.currentPrices.get(symbol)!==price
+        );
+    if(changed)state.currentPrices=next;
+    return changed;
+}
+
+function acceptHistory(payload){
+    const snapshots=Array.isArray(payload?.snapshots)?payload.snapshots:[];
+    const series=payload?.series&&typeof payload.series==="object"
+        ?payload.series
+        :null;
+    const priceChanged=acceptCurrentPrices(
+        payload?.current_prices||payload?.prices
+    );
+    const version=String(
+        payload?.version
+        ??`${payload?.latest_timestamp||0}:${payload?.source_snapshots??snapshots.length}`
+    );
+    if(version===state.historyVersion)return priceChanged;
+    const history=new Map();
+    if(series){
+        Object.entries(series).forEach(([symbol,points])=>{
+            history.set(symbol,(Array.isArray(points)?points:[])
+                .map(point=>Number(point?.price??point))
+                .filter(Number.isFinite));
+        });
+    }else{
+        snapshots.forEach(snapshot=>{
+            Object.entries(snapshot.prices||{}).forEach(([symbol,price])=>{
+                if(!history.has(symbol))history.set(symbol,[]);
+                history.get(symbol).push(Number(price));
+            });
+        });
+    }
+    state.history=history;
+    state.historyVersion=version;
+    return true;
+}
+
+function acceptPortfolio(payload){
+    if(!payload||!Array.isArray(payload.stocks)){
+        throw new Error("Portfolio response has no stock list");
+    }
+    const portfolio=new Map();
+    payload.stocks.forEach(stock=>{
+        const id=Number(stock?.id);
+        const shares=Math.max(0,Math.floor(Number(stock?.shares)||0));
+        if(!Number.isSafeInteger(id)||id<1)return;
+        const transactions=(Array.isArray(stock.transactions)
+            ?stock.transactions
+            :[]
+        ).map(transaction=>({
+            id:Number(transaction.id),
+            shares:Math.max(0,Math.floor(Number(transaction.shares)||0)),
+            price:Number(transaction.price),
+            timestamp:Number(transaction.timestamp)
+        })).filter(transaction=>
+            Number.isSafeInteger(transaction.id)&&transaction.id>0
+            &&transaction.shares>0&&Number.isFinite(transaction.price)
+            &&Number.isFinite(transaction.timestamp)
+        );
+        portfolio.set(id,{
+            id,shares,transactions,bonus:stock.bonus||{}
+        });
+    });
+    state.portfolio=portfolio;
+    state.portfolioStatus="ready";
+    state.portfolioFetchedAt=Number(payload.fetched_at)||Date.now()/1000;
+    if(
+        state.expandedStockId!==null
+        &&!portfolio.has(state.expandedStockId)
+    )state.expandedStockId=null;
+    renderRows();
+}
+
+function portfolioCanRequest(){
+    return Boolean(
+        state.authorized
+        &&document.visibilityState==="visible"
+        &&!elements.dashboard.hidden
+    );
+}
+
+function portfolioSecondsUntil(timestamp){
+    return Math.max(0,Math.ceil((Number(timestamp)-Date.now())/1000));
+}
+
+function updatePortfolioRefreshStatus(){
+    const now=Date.now();
+    const retrying=state.portfolioRetryUntil>now;
+    let mode="";
+    let text="Holdings refresh is ready";
+    if(!state.authorized||elements.dashboard.hidden){
+        mode="paused";
+        text="Holdings refresh is paused";
+    }else if(document.visibilityState!=="visible"){
+        mode="paused";
+        text="Holdings refresh paused while this tab is hidden";
+    }else if(state.portfolioChecking){
+        mode="loading";
+        text="Refreshing holdings from Torn..";
+    }else if(retrying){
+        const seconds=portfolioSecondsUntil(state.portfolioRetryUntil);
+        mode="error";
+        text=`${state.portfolioError||"Torn could not refresh holdings"} Retrying in ${seconds} second${seconds===1?"":"s"}`;
+    }else{
+        const seconds=portfolioSecondsUntil(state.portfolioNextRefreshAt);
+        text=state.portfolioNextRefreshAt
+            ?`Holdings refreshes in ${seconds} second${seconds===1?"":"s"}`
+            :"Holdings refresh is ready";
+    }
+    elements.portfolioRefreshBar.className=`portfolio-refresh-bar ${mode}`.trim();
+    elements.portfolioRefreshText.textContent=text;
+    elements.portfolioRefreshButton.disabled=Boolean(
+        !portfolioCanRequest()||state.portfolioChecking||retrying
+    );
+    elements.portfolioRefreshButton.title=retrying
+        ?`Retry available in ${portfolioSecondsUntil(state.portfolioRetryUntil)} seconds`
+        :"Refresh Torn holdings now";
+}
+
+function stopPortfolioPoll(abortRequest=false){
+    clearTimeout(state.portfolioTimer);
+    state.portfolioTimer=null;
+    if(abortRequest)state.portfolioController?.abort();
+    updatePortfolioRefreshStatus();
+}
+
+async function fetchPortfolio(forceRefresh=false){
+    const controller=new AbortController();
+    state.portfolioController=controller;
+    const timeout=setTimeout(()=>controller.abort(
+        new DOMException("Portfolio request timed out","TimeoutError")
+    ),15000);
+    try{
+        const response=await fetch(`./api/portfolio?v=${Date.now()}`,{
+            cache:"no-store",
+            credentials:"same-origin",
+            signal:controller.signal,
+            headers:forceRefresh?{"X-TornX-Portfolio-Refresh":"1"}:{}
+        });
+        const payload=await response.json().catch(()=>({}));
+        if(!response.ok){
+            const error=new Error(payload.message||`HTTP ${response.status}`);
+            error.status=response.status;
+            error.code=payload.error||"request_failed";
+            error.payload=payload;
+            throw error;
+        }
+        return payload;
+    }finally{
+        clearTimeout(timeout);
+        if(state.portfolioController===controller){
+            state.portfolioController=null;
+        }
+    }
+}
+
+function schedulePortfolioPoll(){
+    clearTimeout(state.portfolioTimer);
+    state.portfolioTimer=null;
+    if(!portfolioCanRequest()){
+        updatePortfolioRefreshStatus();
+        return;
+    }
+    const now=Date.now();
+    const target=state.portfolioRetryUntil>now
+        ?state.portfolioRetryUntil
+        :state.portfolioNextRefreshAt||now;
+    state.portfolioTimer=setTimeout(()=>{
+        state.portfolioTimer=null;
+        if(portfolioCanRequest())loadPortfolio(false);
+        else updatePortfolioRefreshStatus();
+    },Math.max(0,target-now));
+    updatePortfolioRefreshStatus();
+}
+
+async function loadPortfolio(manual=false){
+    if(state.portfolioChecking||!portfolioCanRequest())return;
+    if(state.portfolioRetryUntil>Date.now()){
+        if(manual){
+            showToast(`Holdings retry is available in ${portfolioSecondsUntil(state.portfolioRetryUntil)} seconds`);
+        }
+        schedulePortfolioPoll();
+        return;
+    }
+    clearTimeout(state.portfolioTimer);
+    state.portfolioTimer=null;
+    state.portfolioChecking=true;
+    if(state.portfolioStatus!=="ready"){
+        state.portfolioStatus="loading";
+        renderRows();
+    }
+    updatePortfolioRefreshStatus();
+    try{
+        acceptPortfolio(await fetchPortfolio(manual));
+        state.portfolioRetryUntil=0
+        state.portfolioError=""
+        /*
+        state.portfolioNextRefreshAt=Math.max(
+            Date.now(),state.portfolioFetchedAt*1000+PORTFOLIO_REFRESH_MS
+        );
+        */
+        state.portfolioNextRefreshAt=Date.now()+PORTFOLIO_REFRESH_MS
+        if(manual)showToast("Your Torn stock portfolio is up to date")
+    }catch(error){
+        if(error.name==="AbortError"){
+            if(state.portfolioStatus==="loading")state.portfolioStatus="idle";
+            return;
+        }
+        if(handleSessionInvalidated(error))return;
+        if(handleTrialExpired(error))return;
+        if(error.code==="access_pending"){
+            showPendingAccess(error.payload);
+            return;
+        }
+        if(error.code==="access_blocked"){
+            forgetCredential();
+            lockDashboard("This account is not permitted to access TornX");
+            return;
+        }
+        if(error.code==="portfolio_access_denied"){
+            state.portfolioRetryUntil=0;
+            state.portfolioStatus="error";
+            state.portfolioNextRefreshAt=0;
+            state.portfolioError="Your Torn key can no longer access holdings. Sign in with a new key.";
+            stopPortfolioPoll();showToast(state.portfolioError);
+            return;
+        }
+        if(error.status===401){
+            lockDashboard("Your session expired. Restoring access…");
+            setTimeout(()=>bootstrapAuth(),0);
+            return;
+        }
+        if(state.portfolioStatus!=="ready")state.portfolioStatus="error";
+        state.portfolioError=`Torn holdings error: ${error.message}`;
+        state.portfolioRetryUntil=Date.now()+PORTFOLIO_RETRY_MS;
+        state.portfolioNextRefreshAt=0;
+        showToast(`${state.portfolioError} Retrying in 60 seconds`);
+    }finally{
+        state.portfolioChecking=false;
+        if(state.authorized)schedulePortfolioPoll();
+    }
+}
+
+function toggleStockHolding(row){
+    const stockId=Number(row.dataset.stockId);
+    const symbol=row.dataset.stockSymbol||"stock";
+    const name=stockNames[symbol]?.name||symbol;
+    if(state.portfolioStatus==="idle"||state.portfolioStatus==="loading"){
+        showToast("Your stock positions are still loading");
+        loadPortfolio(true);
+        return;
+    }
+    if(state.portfolioStatus==="error"){
+        if(state.portfolioRetryUntil>Date.now()){
+            showToast(`${state.portfolioError||"Your stock positions could not be loaded"} Retrying in ${portfolioSecondsUntil(state.portfolioRetryUntil)} seconds`);
+        }else loadPortfolio(true);
+        return;
+    }
+    const position=state.portfolio.get(stockId);
+    if(!position||Number(position.shares)<=0){
+        showToast(`You do not currently own shares in ${name}`)
+        return;
+    }
+    state.expandedStockId=state.expandedStockId===stockId?null:stockId;
+    renderRows();
+}
+
+async function fetchSnapshot(){
+    const controller=new AbortController();
+    const timeout=setTimeout(()=>controller.abort(),3500);
+    try{
+        const response=await fetch(`./api/prediction?v=${Date.now()}`,{
+            cache:"no-store",
+            credentials:"same-origin",
+            signal:controller.signal,
+        });
+        const payload=await response.json().catch(()=>({}));
+        if(!response.ok){
+            const error=new Error(payload.message||`HTTP ${response.status}`);
+            error.status=response.status;
+            error.code=payload.error||"request_failed";
+            error.payload=payload;
+            throw error;
+        }
+        return payload;
+    }finally{
+        clearTimeout(timeout);
+    }
+}
+
+async function fetchMarketStatus(){
+    const controller=new AbortController();
+    const timeout=setTimeout(()=>controller.abort(),3500);
+    try{
+        const response=await fetch(`./api/history/status?v=${Date.now()}`,{
+            cache:"no-store",
+            credentials:"same-origin",
+            signal:controller.signal,
+        });
+        const payload=await response.json().catch(()=>({}));
+        if(!response.ok){
+            const error=new Error(payload.message||`HTTP ${response.status}`);
+            error.status=response.status;
+            error.code=payload.error||"request_failed";
+            error.payload=payload;
+            throw error;
+        }
+        return payload;
+    }finally{
+        clearTimeout(timeout);
+    }
+}
+
+async function fetchHistory(){
+    const controller=new AbortController();
+    const timeout=setTimeout(()=>controller.abort(),3500);
+    try{
+        const response=await fetch(`./api/history?v=${Date.now()}`,{
+            cache:"no-store",
+            credentials:"same-origin",
+            signal:controller.signal,
+        });
+        const payload=await response.json().catch(()=>({}));
+        if(!response.ok){
+            const error=new Error(payload.message||`HTTP ${response.status}`);
+            error.status=response.status;
+            error.code=payload.error||"request_failed";
+            error.payload=payload;
+            throw error;
+        }
+        return payload;
+    }finally{
+        clearTimeout(timeout);
+    }
+}
+
+async function checkForUpdate(manual=false){
+    if(state.checking||!state.authorized)return;
+    state.checking=true;
+    if(manual)setConnection("","Checking hash");
+    try{
+        const status=await fetchMarketStatus();
+        const cacheVersion=String(
+            status.cache_version??status.version??""
+        );
+        const predictionVersion=String(status.prediction_version??"");
+        const currentChanged=acceptCurrentPrices(status.prices);
+        state.cacheVersion=cacheVersion||state.cacheVersion;
+        const needsPrediction=manual||!state.data||(
+            predictionVersion&&predictionVersion!==state.predictionVersion
+        );
+        const needsHistory=manual||!state.historyVersion||(
+            cacheVersion&&cacheVersion!==state.historyVersion
+        );
+        const [predictionResult,historyResult]=await Promise.allSettled([
+            needsPrediction?fetchSnapshot():Promise.resolve(null),
+            needsHistory?fetchHistory():Promise.resolve(null)
+        ]);
+        if(needsPrediction&&predictionResult.status==="rejected"){
+            throw predictionResult.reason;
+        }
+        const predictionChanged=needsPrediction
+            ?acceptPayload(predictionResult.value,"JSON")
+            :false;
+        if(needsPrediction){
+            state.predictionVersion=predictionVersion||state.predictionVersion;
+        }
+        const historyChanged=needsHistory
+            &&historyResult.status==="fulfilled"
+            ?acceptHistory(historyResult.value)
+            :false;
+        if(needsHistory&&historyResult.status==="rejected"){
+            throw historyResult.reason;
+        }
+        if(currentChanged||historyChanged){
+            renderRows();
+            if(!predictionChanged){
+                setConnection(
+                    "live",
+                    currentChanged?"Latest prices synced":"History updated"
+                );
+            }
+        }
+        if(!predictionChanged&&!currentChanged&&!historyChanged){
+            if(status.pending){
+                setConnection(
+                    "",
+                    `Cache update settling (${Number(status.quiet_seconds)||10}s quiet period)`
+                );
+            }else setConnection("live","Market data current");
+        }
+        if(manual&&!predictionChanged&&!currentChanged&&!historyChanged){
+            showToast("Already displaying the latest market data");
+        }
+    }catch(error){
+        if(handleSessionInvalidated(error))return;
+        if(handleTrialExpired(error))return;
+        if(error.code==="access_pending"){
+            showPendingAccess(error.payload);
+            return;
+        }
+        if(error.code==="access_blocked"){
+            forgetCredential();
+            lockDashboard("This account is not permitted to access TornX");
+            return;
+        }
+        if(error.status===401){
+            lockDashboard("Your session expired. Restoring access…");
+            setTimeout(()=>bootstrapAuth(),0);
+            return;
+        }
+        if(!state.data){
+            renderRows();
+            setConnection("error","Waiting for JSON");
+        }else{
+            setConnection("error","Last snapshot retained");
+        }
+        if(manual)showToast(`Could not refresh: ${error.message}`);
+    }finally{
+        state.checking=false;
+        if(state.authorized)schedulePoll();
+    }
+}
+
+function schedulePoll(){
+    clearTimeout(state.pollTimer);
+    if(!state.authorized)return;
+    state.pollTimer=setTimeout(
+        ()=>checkForUpdate(false),
+        document.hidden?12000:MARKET_STATUS_POLL_MS
+    );
+}
+
+function updateCountdown(){
+    if(!state.data){
+        elements.countdown.textContent="--:--:--";
+        elements.targetDate.textContent="Awaiting data";
+        elements.targetRing.style.setProperty("--progress","0deg");
+        return;
+    }
+    const target=Number(state.data.predicted_change_timestamp);
+    const observed=Number(state.data.observed_through_timestamp);
+    const now=Date.now()/1000;
+    const remaining=target-now;
+    elements.countdown.textContent=remaining>0?duration(remaining):"WINDOW LIVE";
+    const targetParts=utcDateParts(target);
+    elements.targetDate.innerHTML=`<span>${targetParts.date}</span><span>${targetParts.time}</span>`;
+    const span=Math.max(1,target-observed);
+    const progress=Math.max(0,Math.min(1,(now-observed)/span));
+    elements.targetRing.style.setProperty("--progress",`${progress*360}deg`);
+}
+
+elements.loginForm.addEventListener("submit",submitLogin);
+elements.keyToggle.addEventListener("click",()=>{
+    const showing=elements.apiKey.type==="text";
+    elements.apiKey.type=showing?"password":"text";
+    elements.keyToggle.textContent=showing?"Show":"Hide";
+    elements.keyToggle.setAttribute("aria-label",showing?"Show API key":"Hide API key");
+});
+elements.logout.addEventListener("click",logout);
+elements.pendingLogout.addEventListener("click",logout);
+elements.adminMount.addEventListener("click",handleAdminClick);
+elements.adminMount.addEventListener("submit",handleAdminSubmit);
+document.addEventListener("keydown",event=>{
+    if(event.key==="Escape"&&!adminNode("#adminOverlay")?.hidden){
+        closeAdminPanel();
+    }
+});
+elements.accessChecks.forEach(input=>input.addEventListener(
+    "change",updateAcknowledgements
+));
+elements.revealOffer.addEventListener("click",revealAccessOffer);
+elements.checkAccess.addEventListener("click",()=>refreshAccess(true));
+elements.search.addEventListener("input",event=>{state.query=event.target.value;renderRows()});
+elements.sort.addEventListener("change",event=>{state.sort=event.target.value;renderRows()});
+elements.refresh.addEventListener("click",()=>checkForUpdate(true));
+elements.portfolioRefreshButton.addEventListener("click",()=>loadPortfolio(true));
+elements.rows.addEventListener("click",event=>{
+    if(event.target.closest("a,button,input,select,label"))return;
+    const row=event.target.closest(".stock-row");
+    if(row)toggleStockHolding(row);
+});
+elements.rows.addEventListener("keydown",event=>{
+    if(event.key!=="Enter"&&event.key!==" ")return;
+    const row=event.target.closest(".stock-row");
+    if(!row)return;
+    event.preventDefault();
+    toggleStockHolding(row);
+});
+document.querySelectorAll(".filter-button[data-filter]").forEach(button=>button.addEventListener("click",()=>{
+    document.querySelectorAll(".filter-button[data-filter]").forEach(item=>item.classList.toggle("active",item===button));
+    state.filter=button.dataset.filter;
+    renderRows();
+}));
+document.addEventListener("visibilitychange",()=>{
+    if(!state.authenticated)return;
+    if(document.visibilityState==="visible")updateTrialAccessCountdown();
+    if(state.authorized){
+        if(document.visibilityState==="visible"){
+            checkForUpdate(false);
+            if(
+                state.portfolioRetryUntil>Date.now()
+                ||state.portfolioNextRefreshAt>Date.now()
+            )schedulePortfolioPoll();
+            else loadPortfolio(false);
+        }else{
+            stopPortfolioPoll(true);
+            schedulePoll();
+        }
+    }else{
+        if(!document.hidden)refreshAccess(false);else scheduleAccessPoll();
+    }
+});
+setInterval(()=>{
+    updateCountdown();
+    updatePortfolioRefreshStatus();
+    updateAuthRetryCountdown();
+},1000);
+startAuthCanvas();
+startAuthCanvas(elements.accessCanvas);
+bootstrapAuth();
+</script>
+</body>
+</html>

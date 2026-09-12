@@ -1,0 +1,281 @@
+Update TornX to make the predictor's validation and historical performance much more transparent to users.
+
+Before changing anything, inspect the current predictor output schema, `dist/index.html`, the frozen forward-test data, and any existing accuracy/validation fields. Reuse existing data wherever possible.
+
+## Important constraints
+
+* Do NOT change the prediction algorithm.
+* Do NOT change model selection, BUY/SELL/HOLD logic, Selective thresholds, fee calculations, prediction timing, or confidence logic.
+* Do NOT expose proprietary model weights, formulas, thresholds, or internal trade-secret logic.
+* Do NOT inflate or reinterpret any accuracy metric.
+* Keep the existing TornX visual design.
+* All accuracy metrics must clearly state exactly what they measure.
+* Do not call something independently verified, immutable, or cryptographically proven unless it genuinely is.
+
+## 1. Make accuracy presentation transparent
+
+The current UI prominently shows:
+
+`selective_price_accuracy_percent`
+
+while the broader:
+
+`accuracy_percent`
+
+is effectively hidden in the tooltip.
+
+Change this.
+
+The stat area should clearly display both metrics, with explicit labels such as:
+
+* `Selective exact-price accuracy`
+* `Forced all-stock exact-price accuracy`
+
+Do not imply that either metric is universally "the real accuracy". They measure different things.
+
+Also show Selective validation coverage if that information exists in the frozen validation data.
+
+For example:
+
+```text
+Selective exact-price
+92.93%
+
+Selective coverage
+750 actions / 27 qualifying events
+
+Forced all-stock exact-price
+XX.XX%
+```
+
+We need a second JSONL file to save previous TornX predictions when predicted in stocks_algorithm_predictor.py to then be used below.
+
+The coverage must refer to the historical validation sample used for that Selective accuracy, NOT the number of currently fee-cleared stocks or current predictions.
+
+If the required coverage information is not currently present in the prediction JSON, add an honest validation metadata field sourced from the frozen/backtest data.
+
+Do not fabricate coverage.
+
+Add tooltips explaining the distinction:
+
+**Selective exact-price accuracy**
+Accuracy measured only on historical situations where the stricter Selective gate qualified.
+
+**Forced all-stock exact-price accuracy**
+Accuracy when the model is forced to produce prices across the complete stock set rather than restricting the metric to Selective qualifying situations.
+
+Make it obvious that Selective deliberately abstains when its stricter conditions are not met.
+
+## 2. Explain the persistence baseline honestly
+
+The application currently exposes models including:
+
+* State Reversal
+* Price Persistence
+* Two-State Regression
+* Momentum Extrapolation
+
+Persistence is legitimate, but users should not discover by reverse engineering the frontend that it means "prices remain at their current state".
+
+Add a small model methodology explanation accessible from the Forecast Model stat.
+
+For persistence, explicitly say something like:
+
+> Price Persistence is a baseline model that forecasts prices remaining at their current state. Because Torn stocks frequently remain unchanged between snapshots, unchanged-window accuracy can naturally be high. TornX therefore evaluates changed-state and Selective performance separately rather than treating unchanged-window accuracy as evidence of profitable prediction ability.
+
+Do not present the old 98-99% unchanged-window accuracy as a trading-performance claim.
+
+## 3. Add a compact methodology / validation panel
+
+Add a small expandable section or modal such as:
+
+`HOW TORNX IS VALIDATED`
+
+Explain, without exposing proprietary rules:
+
+* Historical observations are chronological 15-minute Torn market snapshots.
+* Consecutive unchanged full-market snapshots are treated as the same distinct market state.
+* Validation uses chronological held-out data, not random train/test shuffling.
+* Changed-state performance is evaluated separately from unchanged periods.
+* The Selective layer deliberately abstains unless its stricter conditions qualify.
+* Fee-aware trade evaluation includes Torn's 0.1% selling fee.
+* Historical validation and genuine forward validation are separate things.
+* The frozen forward test is not refitted while new observations are collected.
+* No accuracy percentage is a guarantee of future profit.
+
+Keep this short and readable. Do not expose exact Selective thresholds, weighting, model coefficients, or proprietary calculations.
+
+## 4. Fix the snapshot hash wording
+
+The current UI makes the hash look more evidentiary than it really is.
+
+A hash generated and served by the same server as the prediction is useful as a snapshot identifier, but it does not independently prove that a prediction existed before its outcome.
+
+Rename wording such as:
+live hash monitor
+
+to something like:
+prediction snapshot monitor
+
+Add a tooltip:
+
+> Identifies the prediction payload currently being displayed. By itself, this hash is not an independent timestamp or third-party proof of publication.
+
+Do not remove the hash functionality. Just describe it accurately.
+
+## 5. Add a public prediction history / scoring ledger
+
+This is the most important addition.
+
+Create a public-facing prediction history where users can inspect previous TornX predictions after their prediction windows have resolved.
+
+Each logged prediction cycle should retain at minimum:
+
+* prediction/snapshot ID
+* hash
+* issued timestamp
+* predicted change timestamp
+* predicted window if available
+* active forecast model
+* Selective decision: PREDICT or ABSTAIN
+* each stock's:
+
+  * stock symbol
+  * source/current price used for prediction
+  * predicted price
+  * predicted percentage move
+  * BUY / SELL-AVOID / HOLD
+  * trade eligibility / fee-cleared state
+* actual resulting market-state price once known
+* result/scoring fields once resolved
+
+The important property is:
+
+**Predictions must be logged before their outcomes are known.**
+
+Never overwrite the original prediction when scoring it later. Add outcome/scoring data separately.
+
+Users should be able to see both successes and misses.
+
+Do not silently delete failed predictions.
+
+### Suggested UI
+
+Add a link/button:
+
+`VIEW PREDICTION HISTORY`
+
+Each cycle could show:
+
+```text
+ISSUED
+2026-08-21 14:15 UTC
+
+EXPECTED STATE
+2026-08-22 11:30 UTC
+
+SELECTIVE
+PREDICT
+
+RESULT
+Resolved
+
+Exact prices: 31 / 35
+Direction: ...
+Fee-cleared actions: ...
+```
+
+Then allow expanding the cycle to view all 35 individual stock forecasts versus actual outcomes.
+
+Keep it compact and consistent with the existing TornX UI.
+
+## 6. Make the ledger tamper-evident without making false claims
+
+Create a chained history hash if practical:
+
+```text
+entry_hash =
+SHA256(previous_entry_hash + canonical_prediction_payload)
+```
+
+Store the previous hash with every entry.
+
+This makes modifications to previously published history detectable relative to later entries.
+
+However, clearly document that a server-hosted hash chain is still NOT independent proof of when the prediction was originally created.
+
+Architect the logger so an external timestamp/commitment provider can later be added cleanly.
+
+If there is currently no independently controlled publishing/timestamp service configured, do NOT invent one and do NOT claim independent verification.
+
+## 7. Scoring must be meaningful
+
+Do not score predictions purely by easy unchanged 15-minute snapshots.
+
+The public history is primarily about the predicted **next distinct market state**.
+
+When the predicted state resolves, score things separately:
+
+* exact predicted price
+* direction
+* absolute price error
+* predicted move
+* fee-cleared signal outcome where applicable
+* Selective results separately from forced/all-stock forecasts
+
+If the Selective tier was ABSTAIN, display that honestly instead of retroactively treating it as a Selective prediction.
+
+Never merge Selective and non-Selective results into one flattering percentage.
+
+## 8. UI terminology
+
+Use explicit terminology throughout:
+
+* `Selective exact-price accuracy`
+* `Forced all-stock exact-price accuracy`
+* `Selective coverage`
+* `Prediction snapshot`
+* `Snapshot ID / hash`
+* `Historical held-out validation`
+* `Forward validation`
+* `PREDICT`
+* `ABSTAIN`
+
+Avoid vague labels such as simply:
+
+`Accuracy`
+
+when multiple different accuracy definitions exist.
+
+## 9. Preserve compatibility
+
+Do not break:
+
+* authentication
+* trial access
+* portfolio loading
+* portfolio refresh scheduling
+* current Torn price syncing
+* search/filter/sort
+* holdings
+* prediction polling
+* current hash-change refresh behavior
+* responsive layout
+* existing BUY/SELL/HOLD and fee-cleared functionality
+
+## Final checks
+
+After implementing:
+
+1. Verify all accuracy values map to the correct backend fields.
+2. Verify Selective accuracy cannot be mistaken for universal per-stock confidence.
+3. Verify persistence is clearly described as a baseline.
+4. Verify the public history contains misses as well as hits.
+5. Verify original prediction records are never modified when outcomes are added.
+6. Verify ABSTAIN cycles are represented correctly.
+7. Verify the 0.1% selling fee remains included in fee-aware trade evaluation.
+8. Verify no proprietary thresholds or model internals were exposed.
+9. Verify the hash UI no longer claims independent verification.
+10. Test the complete UI on desktop and mobile.
+
+At the end, list every file changed, briefly explain each change, and point out any validation/coverage data that was unavailable rather than inventing it.

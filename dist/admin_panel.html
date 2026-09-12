@@ -1,0 +1,70 @@
+<button class="admin-launch" id="adminLaunchButton" type="button" aria-haspopup="dialog" aria-controls="adminOverlay">
+    <span class="admin-launch-mark" aria-hidden="true">AX</span>
+    <span class="admin-launch-copy"><strong>Admin console</strong><small>Access control</small></span>
+    <span class="admin-launch-live"><i></i>Live</span>
+</button>
+<div class="admin-overlay" id="adminOverlay" hidden>
+    <button class="admin-backdrop" id="adminBackdrop" type="button" aria-label="Close admin console"></button>
+    <aside class="admin-console" role="dialog" aria-modal="true" aria-labelledby="adminTitle">
+        <header class="admin-header">
+            <div class="admin-heading">
+                <span class="admin-heading-mark" aria-hidden="true">TX</span>
+                <div><span>TornX command layer</span><h2 id="adminTitle">Access administration</h2></div>
+            </div>
+            <div class="admin-header-actions">
+                <button class="admin-icon-button" id="adminRefreshButton" type="button" title="Refresh access lists" aria-label="Refresh access lists">↻</button>
+                <button class="admin-icon-button admin-close" id="adminCloseButton" type="button" title="Close admin console" aria-label="Close admin console">×</button>
+            </div>
+        </header>
+        <div class="admin-body">
+            <div class="admin-identity-strip">
+                <div><span>Authenticated operator</span><strong id="adminOperatorId">Torn ID —</strong></div>
+                <div class="admin-secure-state"><i></i>Server verified</div>
+            </div>
+            <div class="admin-metrics">
+                <div><span>Whitelisted</span><strong id="adminWhitelistCount">—</strong><small>active IDs</small></div>
+                <div><span>7-day trials</span><strong id="adminTrialCount">—</strong><small>registered IDs</small></div>
+                <div><span>Policy state</span><strong class="admin-policy-live">Live</strong><small>dynamic reload</small></div>
+            </div>
+            <section class="admin-price-card" aria-labelledby="adminPriceTitle">
+                <div class="admin-section-title">
+                    <div><span>Deterministic offer</span><h3 id="adminPriceTitle">Payment lookup</h3></div>
+                    <span class="admin-section-code">PRICE</span>
+                </div>
+                <form class="admin-inline-form" id="adminPriceForm">
+                    <label><span>Torn user ID</span><input id="adminPriceInput" type="text" inputmode="numeric" pattern="[0-9]+" autocomplete="off" placeholder="4435923" required></label>
+                    <button type="submit">Check price</button>
+                </form>
+                <div class="admin-price-result" id="adminPriceResult" hidden>
+                    <div><span>Permanent access price</span><strong id="adminPriceAmount">—</strong></div>
+                    <a id="adminPriceProfile" href="#" target="_blank" rel="noopener noreferrer">Open Torn profile ↗</a>
+                </div>
+            </section>
+            <div class="admin-list-grid">
+                <section class="admin-list-card whitelist" aria-labelledby="adminWhitelistTitle">
+                    <div class="admin-section-title">
+                        <div><span>Permitted identities</span><h3 id="adminWhitelistTitle">Whitelist</h3></div>
+                        <span class="admin-section-code">ALLOW</span>
+                    </div>
+                    <form class="admin-inline-form" id="adminWhitelistForm">
+                        <label><span>Torn user ID</span><input id="adminWhitelistInput" type="text" inputmode="numeric" pattern="[0-9]+" autocomplete="off" placeholder="Add user ID" required></label>
+                        <button type="submit">Add</button>
+                    </form>
+                    <ul class="admin-id-list" id="adminWhitelistList"><li class="admin-list-empty">Loading whitelist…</li></ul>
+                </section>
+                <section class="admin-list-card trial" aria-labelledby="adminTrialTitle">
+                    <div class="admin-section-title">
+                        <div><span>Temporary identities</span><h3 id="adminTrialTitle">7-day trials</h3></div>
+                        <span class="admin-section-code">TRIAL</span>
+                    </div>
+                    <form class="admin-inline-form" id="adminTrialForm">
+                        <label><span>Torn user ID</span><input id="adminTrialInput" type="text" inputmode="numeric" pattern="[0-9]+" autocomplete="off" placeholder="Start 7-day trial" required></label>
+                        <button type="submit">Start</button>
+                    </form>
+                    <ul class="admin-id-list" id="adminTrialList"><li class="admin-list-empty">Loading trials…</li></ul>
+                </section>
+            </div>
+            <p class="admin-footnote">Changes take effect immediately. Expired trial records remain visible until manually removed.<br>Every operation is attributed to your authenticated Torn identity in the server audit log.</p>
+        </div>
+    </aside>
+</div>
