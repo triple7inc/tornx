@@ -19,7 +19,7 @@
   <img alt="35 stocks" src="https://img.shields.io/badge/market-35_stocks-8bd331?style=flat-square">
   <img alt="15-minute windows" src="https://img.shields.io/badge/grid-15_minutes-8bd331?style=flat-square">
   <img alt="Project work estimate" src="https://img.shields.io/badge/project_work-%E2%89%88450_hours-8bd331?style=flat-square">
-  <img alt="License pending" src="https://img.shields.io/badge/license-not_yet_declared-687078?style=flat-square">
+  <img alt="GNU AGPL-3.0 license" src="https://img.shields.io/badge/license-AGPL--3.0-8bd331?style=flat-square">
 </p>
 
 > [!IMPORTANT]
@@ -445,9 +445,7 @@ Approximately **450 hours of work** have gone into bringing TornX from the origi
 
 ## License
 
-No `LICENSE` file is currently present, so merely publishing the repository does not grant others an open-source license. For a free network service whose modified hosted versions should remain open, **GNU AGPL-3.0** is the strongest fit. Add the official `LICENSE` text at the repository root before release and then change the badge at the top of this README.
-
-If you deliberately want to allow closed-source forks and proprietary reuse, use MIT instead. Make that choice explicitly before publishing.
+TornX is licensed under the **GNU Affero General Public License v3.0 (AGPL-3.0)**. See the repository's [`LICENSE`](../LICENSE) file for the complete license terms.
 
 ## Next major update
 
