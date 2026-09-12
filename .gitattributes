@@ -1,0 +1,2 @@
+stocks_graph.html filter=lfs diff=lfs merge=lfs -text
+dist/stocks_cache.json filter=lfs diff=lfs merge=lfs -text
